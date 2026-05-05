@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegants Manager - Panel VIP</title>
+    <style>
+        :root { --primary: #d4af37; --secondary: #1a1a1a; --bg: #f4f4f4; --glass: rgba(255, 255, 255, 0.9); --info: #3498db; --danger: #e74c3c; }
+        
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; min-height: 100vh; }
+
+        /* Marca de agua sutil */
+        body::after { content: ""; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; background: url('logo.png') no-repeat center center; background-size: contain; opacity: 0.04; z-index: -1; }
+        
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--secondary); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; text-align: center; }
+        #login-screen input { width: 80%; max-width: 250px; padding: 15px; font-size: 24px; text-align: center; border-radius: 12px; border: none; letter-spacing: 5px; color: #333; }
+        #login-screen button { margin-top: 25px; padding: 15px 45px; background: var(--primary); border: none; border-radius: 12px; color: var(--secondary); font-weight: bold; font-size: 18px; cursor: pointer; }
+
+        #manager-content { display: none; }
+        .tabs { display: flex; background: var(--secondary); position: sticky; top: 0; z-index: 100; border-bottom: 2px solid var(--primary); }
+        .tab-btn { flex: 1; padding: 15px; color: white; border: none; background: none; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .tab-btn.active { background: rgba(212, 175, 55, 0.2); color: var(--primary); }
+        
+        .content { padding: 15px; display: none; }
+        .content.active { display: block; }
+        
+        .card { background: var(--glass); backdrop-filter: blur(8px); padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.5); }
+        h2 { color: var(--secondary); font-size: 1.1em; margin-top: 0; border-left: 5px solid var(--primary); padding-left: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 11px; color: #666; text-transform: uppercase; }
+        input, textarea, select, .btn-main { width: 100%; padding: 14px; margin-top: 6px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 14px; outline: none; }
+        input:focus, select:focus { border-color: var(--primary); }
+        
+        .btn-main { background: var(--secondary); color: var(--primary); border: 2px solid var(--primary); font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.3s; }
+        .btn-main:hover { background: var(--primary); color: var(--secondary); }
+        .btn-main:disabled { background: #ccc; border-color: #ccc; color: #fff; }
+
+        /* LISTA INVENTARIO */
+        .item-row { display: flex; align-items: center; gap: 12px; padding: 15px; border-bottom: 1px solid #eee; background: white; border-radius: 15px; margin-bottom: 10px; }
+        .item-img { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; border: 1px solid #eee; }
+        .item-info { flex: 1; font-size: 13px; }
+        .btn-action { background: none; border: none; font-size: 22px; cursor: pointer; padding: 5px; transition: 0.2s; }
+        .btn-action:active { transform: scale(0.9); }
+
+        /* MODAL DE EDICIÓN */
+        #modal-editar { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 25px; width: 92%; max-width: 480px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .btn-close { position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 28px; color: #bbb; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <h1 style="color: var(--primary); font-style: italic; font-size: 2.5em;">Elegánts</h1>
+        <p style="letter-spacing: 2px; font-size: 0.8em; margin-bottom: 20px;">MANAGER VIP</p>
+        <input type="password" id="pin-input" placeholder="****" inputmode="numeric">
+        <button onclick="verificarAcceso()">ENTRAR AL PANEL</button>
+    </div>
+
+    <div id="modal-editar">
+        <div class="modal-content">
+            <button class="btn-close" onclick="cerrarModal()">✕</button>
+            <h2 style="border-left-color: var(--info);">Modificar Perfume</h2>
+            <form id="form-editar">
+                <input type="hidden" id="e-id">
+                <input type="hidden" id="e-imagen-actual">
+                
+                <label>Nombre:</label>
+                <input type="text" id="e-nombre" required>
+                <label>Precio (₡):</label>
+                <input type="number" id="e-precio" required>
+                <label>Descripción:</label>
+                <textarea id="e-desc" rows="3"></textarea>
+                <label>Link Video:</label>
+                <input type="text" id="e-video">
+                
+                <label>Categoría Principal:</label>
+                <select id="e-cat">
+                    <option value="Caballero">Caballero</option>
+                    <option value="Dama">Dama</option>
+                    <option value="Infantil">Infantil</option>
+                    <option value="Unisex">Unisex</option>
+                </select>
+
+                <label>Subcategoría (Estilo):</label>
+                <select id="e-subcat">
+                    <option value="Árabes">Árabes</option>
+                    <option value="Nicho / Exclusivos">Nicho / Exclusivos</option>
+                    <option value="Diseñador">Diseñador</option>
+                    <option value="Económicos / Inspiraciones">Económicos / Inspiraciones</option>
+                </select>
+
+                <label>Ocasión de Uso:</label>
+                <select id="e-uso">
+                    <option value="Sport / Diario">Sport / Diario</option>
+                    <option value="Noche / Gala">Noche / Gala</option>
+                    <option value="Oficina">Oficina</option>
+                </select>
+
+                <label>Nueva Foto (Dejar vacío para mantener):</label>
+                <input type="file" id="e-file" accept="image/*">
+                <button type="submit" id="btn-e" class="btn-main" style="border-color: var(--info); color: var(--info);">Actualizar Datos</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="manager-content">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-inventario')">Inventario</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-pedidos')">Pedidos</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-clientes')">Clientes</button>
+        </div>
+
+        <div id="tab-inventario" class="content active">
+            <div class="card">
+                <h2>Añadir a Colección</h2>
+                <form id="form-perfume">
+                    <input type="text" id="p-nombre" placeholder="Nombre del perfume" required>
+                    <input type="number" id="p-precio" placeholder="Precio (₡)" required>
+                    <textarea id="p-desc" placeholder="Descripción de la fragancia..."></textarea>
+                    <input type="text" id="p-video" placeholder="Enlace de video (opcional)">
+                    
+                    <label>Imagen:</label>
+                    <input type="file" id="p-file" accept="image/*" required>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label>Categoría:</label>
+                            <select id="p-cat">
+                                <option value="Caballero">Caballero</option>
+                                <option value="Dama">Dama</option>
+                                <option value="Infantil">Infantil</option>
+                                <option value="Unisex">Unisex</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Estilo:</label>
+                            <select id="p-subcat">
+                                <option value="Árabes">Árabes</option>
+                                <option value="Nicho / Exclusivos">Nicho / Exclusivos</option>
+                                <option value="Diseñador">Diseñador</option>
+                                <option value="Económicos / Inspiraciones">Económicos / Inspiraciones</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label>Mejor ocasión para usar:</label>
+                    <select id="p-uso">
+                        <option value="Sport / Diario">Sport / Diario</option>
+                        <option value="Noche / Gala">Noche / Gala</option>
+                        <option value="Oficina">Oficina</option>
+                    </select>
+
+                    <button type="submit" id="btn-p" class="btn-main">Subir a Catálogo</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>Mis Fragancias</h2>
+                <div id="lista-inventario">Cargando catálogo...</div>
+            </div>
+        </div>
+
+        <div id="tab-pedidos" class="content">
+            <div class="card"><h2>Pedidos Recibidos</h2><div id="lista-pedidos">Buscando nuevos pedidos...</div></div>
+        </div>
+
+        <div id="tab-clientes" class="content">
+            <div class="card"><h2>Club de Clientes</h2><div id="lista-clientes">Cargando base de datos...</div></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjFHWA9gA-yNVlFi-sXCl8anbMJhPrTGs",
+            authDomain: "elegants-40696.firebaseapp.com",
+            projectId: "elegants-40696",
+            storageBucket: "elegants-40696.firebasestorage.app",
+            messagingSenderId: "262268889124",
+            appId: "1:262268889124:web:15b81eee4052d6c73f90b1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let todosLosProductos = [];
+
+        window.verificarAcceso = () => {
+            if (document.getElementById("pin-input").value === "2652") {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("manager-content").style.display = "block";
+                cargarInventario();
+            } else { alert("Acceso denegado."); }
+        };
+
+        window.openTab = (evt, name) => {
+            document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.getElementById(name).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        };
+
+        async function cargarInventario() {
+            const div = document.getElementById("lista-inventario");
+            const snap = await getDocs(query(collection(db, "perfumes"), orderBy("fecha", "desc")));
+            div.innerHTML = "";
+            todosLosProductos = [];
+            snap.forEach(d => {
+                const p = d.data();
+                todosLosProductos.push({ id: d.id, ...p });
+                div.innerHTML += `
+                    <div class="item-row">
+                        <img src="${p.imagen}" class="item-img">
+                        <div class="item-info">
+                            <strong>${p.nombre}</strong><br>
+                            <span style="color:var(--primary); font-weight:bold;">₡${p.precio}</span><br>
+                            <small>${p.categoria} | ${p.subcategoria}</small>
+                        </div>
+                        <button class="btn-action" style="color:var(--info);" onclick="abrirEditar('${d.id}')">✏️</button>
+                        <button class="btn-action" style="color:var(--danger);" onclick="borrarProducto('${d.id}')">🗑️</button>
+                    </div>`;
+            });
+        }
+
+        window.abrirEditar = (id) => {
+            const p = todosLosProductos.find(x => x.id === id);
+            document.getElementById("e-id").value = p.id;
+            document.getElementById("e-nombre").value = p.nombre;
+            document.getElementById("e-precio").value = p.precio;
+            document.getElementById("e-desc").value = p.descripcion || "";
+            document.getElementById("e-video").value = p.video || "";
+            document.getElementById("e-cat").value = p.categoria;
+            document.getElementById("e-subcat").value = p.subcategoria;
+            document.getElementById("e-uso").value = p.uso || "Sport / Diario";
+            document.getElementById("e-imagen-actual").value = p.imagen;
+            document.getElementById("modal-editar").style.display = "flex";
+        };
+
+        window.cerrarModal = () => document.getElementById("modal-editar").style.display = "none";
+
+        document.getElementById("form-editar").onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("btn-e");
+            btn.innerText = "Sincronizando..."; btn.disabled = true;
+            const id = document.getElementById("e-id").value;
+            const file = document.getElementById("e-file").files[0];
+            let url = document.getElementById("e-imagen-actual").value;
+
+            if(file) {
+                const sRef = ref(storage, `perfumes/${Date.now()}_${file.name}`);
+                const snap = await uploadBytes(sRef, file);
+                url = await getDownloadURL(snap.ref);
+            }
+
+            await updateDoc(doc(db, "perfumes", id), {
+                nombre: document.getElementById("e-nombre").value,
+                precio: Number(document.getElementById("e-precio").value),
+                descripcion: document.getElementById("e-desc").value,
+                video: document.getElementById("e-video").value,
+                categoria: document.getElementById("e-cat").value,
+                subcategoria: document.getElementById("e-subcat").value,
+                uso: document.getElementById("e-uso").value,
+                imagen: url
+            });
+            cerrarModal(); cargarInventario();
+            btn.innerText = "Actualizar Datos"; btn.disabled = false;
+        };
+
+        window.borrarProducto = async (id) => {
+            if(confirm("¿Eliminar fragancia definitivamente?")) {
+                await deleteDoc(doc(db, "perfumes", id));
+                cargarInventario();
+            }
+        };
+
+        document.getElementById("form-perfume").onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("btn-p");
+            btn.disabled = true; btn.innerText = "Subiendo...";
+            const file = document.getElementById("p-file").files[0];
+            try {
+                const sRef = ref(storage, `perfumes/${Date.now()}_${file.name}`);
+                const snap = await uploadBytes(sRef, file);
+                const url = await getDownloadURL(snap.ref);
+                await addDoc(collection(db, "perfumes"), {
+                    nombre: document.getElementById("p-nombre").value,
+                    precio: Number(document.getElementById("p-precio").value),
+                    descripcion: document.getElementById("p-desc").value,
+                    video: document.getElementById("p-video").value,
+                    categoria: document.getElementById("p-cat").value,
+                    subcategoria: document.getElementById("p-subcat").value,
+                    uso: document.getElementById("p-uso").value,
+                    imagen: url,
+                    fecha: new Date()
+                });
+                document.getElementById("form-perfume").reset();
+                cargarInventario();
+            } catch (err) { alert("Error: " + err.message); }
+            btn.disabled = false; btn.innerText = "Subir a Catálogo";
+        };
+    </script>
+</body>
+</html>
