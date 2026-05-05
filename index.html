@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegants Manager - Edras Pro</title>
+    <style>
+        :root { --primary: #f39c12; --secondary: #2c3e50; --bg: #f0f2f5; --success: #27ae60; --danger: #e74c3c; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 60px; }
+        
+        /* LOGIN */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--secondary); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; text-align: center; }
+        #login-screen input { width: 80%; max-width: 250px; padding: 15px; font-size: 24px; text-align: center; border-radius: 8px; border: none; margin-bottom: 20px; color: #333; }
+        #login-screen button { padding: 15px 40px; background: var(--primary); border: none; border-radius: 8px; color: white; font-weight: bold; }
+        
+        #manager-content { display: none; }
+
+        /* NAVEGACIÓN */
+        .tabs { display: flex; background: var(--secondary); position: sticky; top: 0; z-index: 100; }
+        .tab-btn { flex: 1; padding: 15px; color: white; border: none; background: none; font-weight: bold; font-size: 11px; cursor: pointer; }
+        .tab-btn.active { border-bottom: 4px solid var(--primary); background: rgba(255,255,255,0.1); }
+
+        .content { padding: 15px; display: none; }
+        .content.active { display: block; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        
+        /* FORMULARIOS */
+        h2 { color: var(--secondary); font-size: 1.1em; margin-top: 0; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 10px; }
+        input, select, textarea, .btn-main { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .search-box { background: #fff; border: 2px solid var(--primary); margin-bottom: 15px; font-size: 16px; }
+        .btn-main { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
+
+        /* LISTA DE CLIENTES CON NOTAS */
+        .client-row { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .client-info { font-size: 14px; margin-bottom: 8px; }
+        .client-notes { font-size: 12px; background: #fff9e6; border: 1px dashed var(--primary); padding: 8px; border-radius: 5px; color: #555; }
+        .btn-save-note { background: var(--secondary); color: white; padding: 5px 10px; border: none; border-radius: 4px; font-size: 11px; margin-top: 5px; cursor: pointer; }
+        
+        .item-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .item-img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <h1>Elegants Manager</h1>
+        <input type="password" id="pin-input" placeholder="PIN" inputmode="numeric">
+        <button onclick="verificarAcceso()">ENTRAR</button>
+    </div>
+
+    <div id="manager-content">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-inventario')">INVENTARIO</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-pedidos')">PEDIDOS</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-clientes')">CLIENTES</button>
+        </div>
+
+        <div id="tab-inventario" class="content active">
+            <div class="card">
+                <h2>Subir Articulo</h2>
+                <form id="form-perfume">
+                    <input type="text" id="p-nombre" placeholder="Nombre del perfume" required>
+                    <input type="number" id="p-precio" placeholder="Precio (₡)" required>
+                    <input type="file" id="p-file" accept="image/*" required>
+                    <button type="submit" id="btn-p" class="btn-main">Guardar en Catálogo</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Catálogo Actual</h2>
+                <div id="lista-productos">Cargando artículos...</div>
+            </div>
+        </div>
+
+        <div id="tab-pedidos" class="content">
+            <div class="card"><h2>Gestión de Pedidos</h2><div id="lista-pedidos">Cargando...</div></div>
+        </div>
+
+        <div id="tab-clientes" class="content">
+            <div class="card">
+                <h2>Buscador de Clientes</h2>
+                <input type="text" id="cliente-search" class="search-box" placeholder="🔍 Buscar nombre o teléfono..." onkeyup="filtrarClientes()">
+                <div id="lista-clientes">Cargando lista de clientes...</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjFHWA9gA-yNVlFi-sXCl8anbMJhPrTGs",
+            authDomain: "elegants-40696.firebaseapp.com",
+            projectId: "elegants-40696",
+            storageBucket: "elegants-40696.firebasestorage.app",
+            messagingSenderId: "262268889124",
+            appId: "1:262268889124:web:15b81eee4052d6c73f90b1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let todosLosClientes = [];
+
+        window.verificarAcceso = () => {
+            if(document.getElementById("pin-input").value === "2652") {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("manager-content").style.display = "block";
+                cargarInventario();
+            } else { alert("Clave Incorrecta"); }
+        };
+
+        window.openTab = (evt, name) => {
+            document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.getElementById(name).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            if(name === 'tab-clientes') cargarClientes();
+            if(name === 'tab-pedidos') cargarPedidos();
+            if(name === 'tab-inventario') cargarInventario();
+        };
+
+        // INVENTARIO
+        async function cargarInventario() {
+            const div = document.getElementById("lista-productos");
+            const snap = await getDocs(query(collection(db, "perfumes"), orderBy("fecha", "desc")));
+            div.innerHTML = "";
+            snap.forEach(d => {
+                const p = d.data();
+                div.innerHTML += `
+                    <div class="item-row">
+                        <img src="${p.imagen}" class="item-img">
+                        <div class="item-info"><strong>${p.nombre}</strong><br>₡${p.precio}</div>
+                    </div>`;
+            });
+        }
+
+        document.getElementById("form-perfume").onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("btn-p");
+            const file = document.getElementById("p-file").files[0];
+            const storageRef = ref(storage, `perfumes/${Date.now()}_${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on('state_changed', 
+                (snap) => { btn.innerText = Math.round((snap.bytesTransferred/snap.totalBytes)*100) + "%"; },
+                null,
+                async () => {
+                    const url = await getDownloadURL(uploadTask.snapshot.ref);
+                    await addDoc(collection(db, "perfumes"), {
+                        nombre: document.getElementById("p-nombre").value,
+                        precio: Number(document.getElementById("p-precio").value),
+                        imagen: url,
+                        fecha: new Date()
+                    });
+                    document.getElementById("form-perfume").reset();
+                    btn.innerText = "Guardar en Catálogo";
+                    cargarInventario();
+                }
+            );
+        };
+
+        // CLIENTES CON BUSCADOR Y NOTAS PRIVADAS
+        async function cargarClientes() {
+            const snap = await getDocs(collection(db, "clientes"));
+            todosLosClientes = [];
+            snap.forEach(d => todosLosClientes.push({ id: d.id, ...d.data() }));
+            renderClientes(todosLosClientes);
+        }
+
+        function renderClientes(lista) {
+            const div = document.getElementById("lista-clientes");
+            div.innerHTML = lista.length ? "" : "No hay clientes que coincidan.";
+            lista.forEach(c => {
+                div.innerHTML += `
+                    <div class="client-row">
+                        <div class="client-info">
+                            <strong>👤 ${c.nombre}</strong><br>
+                            📞 ${c.telefono} | 📍 ${c.direccion || 'Sin dirección'}<br>
+                        </div>
+                        <textarea id="note-${c.id}" class="client-notes" placeholder="Escribe aquí tus notas privadas sobre este cliente...">${c.notasPrivadas || ''}</textarea>
+                        <button class="btn-save-note" onclick="guardarNota('${c.id}')">💾 Guardar Nota</button>
+                    </div>`;
+            });
+        }
+
+        window.filtrarClientes = () => {
+            const texto = document.getElementById("cliente-search").value.toLowerCase();
+            const filtrados = todosLosClientes.filter(c => 
+                c.nombre.toLowerCase().includes(texto) || 
+                c.telefono.toString().includes(texto)
+            );
+            renderClientes(filtrados);
+        };
+
+        window.guardarNota = async (id) => {
+            const nota = document.getElementById(`note-${id}`).value;
+            const clientRef = doc(db, "clientes", id);
+            try {
+                await updateDoc(clientRef, { notasPrivadas: nota });
+                alert("Nota personal guardada con éxito.");
+                cargarClientes();
+            } catch(e) { alert("Error al guardar nota."); }
+        };
+
+        async function cargarPedidos() {
+            const div = document.getElementById("lista-pedidos");
+            div.innerHTML = "Cargando pedidos...";
+            const snap = await getDocs(collection(db, "pedidos"));
+            div.innerHTML = "";
+            snap.forEach(d => {
+                const p = d.data();
+                div.innerHTML += `<div class="item-row"><strong>${p.clienteNombre}</strong> - ₡${p.total} [${p.estado}]</div>`;
+            });
+        }
+    </script>
+</body>
+</html>
