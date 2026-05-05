@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegants - Panel de Administración</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 15px; background-color: #f0f2f5; color: #333; }
+        .section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #f39c12; padding-bottom: 8px; margin-top: 0; }
+        label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.9em; }
+        input, textarea, select, button { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { background-color: #f39c12; color: white; border: none; cursor: pointer; font-weight: bold; margin-top: 15px; transition: 0.3s; }
+        button:active { transform: scale(0.98); background-color: #d35400; }
+        .success-msg { color: #27ae60; font-weight: bold; display: none; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>📦 Agregar Perfume</h2>
+        <form id="form-perfume">
+            <input type="text" id="p-nombre" placeholder="Nombre (Ej: Club de Nuit)" required>
+            <textarea id="p-desc" placeholder="Descripción breve" required></textarea>
+            <input type="number" id="p-precio" placeholder="Precio (CRC)" required>
+            <input type="text" id="p-img" placeholder="Link de la foto" required>
+            
+            <label>Categoría Principal</label>
+            <select id="p-cat">
+                <option value="Caballero">Caballero</option>
+                <option value="Dama">Dama</option>
+                <option value="Unisex">Unisex</option>
+            </select>
+
+            <label>Subcategoría / Estilo</label>
+            <select id="p-subcat">
+                <option value="Árabe">Árabe</option>
+                <option value="Sport">Sport</option>
+                <option value="Elegante">Elegante</option>
+                <option value="Casual">Casual</option>
+                <option value="Nicho">Nicho</option>
+            </select>
+
+            <button type="submit">Guardar Perfume</button>
+            <p id="msg-p" class="success-msg">¡Perfume agregado!</p>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>👥 Nuevo Cliente</h2>
+        <form id="form-cliente">
+            <input type="text" id="c-nombre" placeholder="Nombre completo del cliente" required>
+            <input type="tel" id="c-tel" placeholder="Teléfono / WhatsApp" required>
+            <input type="number" id="c-saldo" placeholder="Saldo inicial (deuda si aplica)" value="0">
+            <button type="submit" style="background-color: #3498db;">Registrar Cliente</button>
+            <p id="msg-c" class="success-msg">¡Cliente registrado!</p>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>💰 Registrar Abono</h2>
+        <form id="form-abono">
+            <input type="text" id="a-cliente" placeholder="Nombre del cliente" required>
+            <input type="number" id="a-monto" placeholder="Monto del abono" required>
+            <input type="date" id="a-fecha">
+            <button type="submit" style="background-color: #27ae60;">Guardar Abono</button>
+            <p id="msg-a" class="success-msg">¡Abono registrado!</p>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjFHWA9gA-yNVlFi-sXCl8anbMJhPrTGs",
+            authDomain: "elegants-40696.firebaseapp.com",
+            projectId: "elegants-40696",
+            storageBucket: "elegants-40696.firebasestorage.app",
+            messagingSenderId: "262268889124",
+            appId: "1:262268889124:web:15b81eee4052d6c73f90b1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // FUNCIÓN GENÉRICA PARA GUARDAR EN CUALQUIER COLECCIÓN
+        const guardarDatos = async (formId, collectionName, dataObj, msgId) => {
+            try {
+                await addDoc(collection(db, collectionName), dataObj);
+                document.getElementById(msgId).style.display = "block";
+                document.getElementById(formId).reset();
+                setTimeout(() => { document.getElementById(msgId).style.display = "none"; }, 3000);
+            } catch (e) {
+                alert("Error al guardar: " + e.message);
+            }
+        };
+
+        // Eventos de los formularios
+        document.getElementById("form-perfume").onsubmit = (e) => {
+            e.preventDefault();
+            const data = {
+                nombre: document.getElementById("p-nombre").value,
+                descripcion: document.getElementById("p-desc").value,
+                precio: Number(document.getElementById("p-precio").value),
+                imagen: document.getElementById("p-img").value,
+                categoria: document.getElementById("p-cat").value,
+                subcategoria: document.getElementById("p-subcat").value,
+                fecha: new Date()
+            };
+            guardarDatos("form-perfume", "perfumes", data, "msg-p");
+        };
+
+        document.getElementById("form-cliente").onsubmit = (e) => {
+            e.preventDefault();
+            const data = {
+                nombre: document.getElementById("c-nombre").value,
+                telefono: document.getElementById("c-tel").value,
+                saldo: Number(document.getElementById("c-saldo").value),
+                fechaRegistro: new Date()
+            };
+            guardarDatos("form-cliente", "clientes", data, "msg-c");
+        };
+
+        document.getElementById("form-abono").onsubmit = (e) => {
+            e.preventDefault();
+            const data = {
+                cliente: document.getElementById("a-cliente").value,
+                monto: Number(document.getElementById("a-monto").value),
+                fecha: document.getElementById("a-fecha").value || new Date().toISOString().split('T')[0]
+            };
+            guardarDatos("form-abono", "abonos", data, "msg-a");
+        };
+    </script>
+</body>
+</html>
