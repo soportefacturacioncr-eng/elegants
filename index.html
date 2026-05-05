@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegants Manager - Diagnóstico</title>
+    <style>
+        :root { --primary: #f39c12; --secondary: #2c3e50; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
+        
+        /* PANTALLA DE ACCESO */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--secondary); color: white; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1000; padding: 20px; box-sizing: border-box; text-align: center;
+        }
+        #login-screen input {
+            width: 80%; max-width: 250px; padding: 15px; font-size: 24px;
+            text-align: center; border-radius: 8px; border: none; letter-spacing: 5px; color: #333;
+        }
+        #login-screen button {
+            margin-top: 20px; padding: 15px 40px; background: var(--primary);
+            border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 18px;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        #manager-content { display: none; }
+
+        .tabs { display: flex; background: var(--secondary); position: sticky; top: 0; z-index: 100; }
+        .tab-btn { flex: 1; padding: 15px; color: white; border: none; background: none; font-weight: bold; font-size: 11px; cursor: pointer; }
+        .tab-btn.active { border-bottom: 4px solid var(--primary); background: rgba(255,255,255,0.1); }
+        .content { padding: 15px; display: none; }
+        .content.active { display: block; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        h2 { color: var(--secondary); font-size: 1.2em; margin-top: 0; border-left: 4px solid var(--primary); padding-left: 10px; }
+        input, textarea, select, .btn-main { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        .btn-main { background: var(--primary); color: white; border: none; font-weight: bold; margin-top: 15px; }
+        .pedido-item { border-bottom: 1px solid #eee; padding: 10px 0; font-size: 14px; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .pendiente { background: #ffeaa7; color: #d35400; }
+        .en-curso { background: #81ecec; color: #008080; }
+        .entregado { background: #55efc4; color: #006266; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <h1>Elegants Manager</h1>
+        <p>Ingresa la clave de acceso:</p>
+        <input type="password" id="pin-input" placeholder="****" inputmode="numeric">
+        <button id="btn-login">ENTRAR</button>
+    </div>
+
+    <div id="manager-content">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-inventario')">INVENTARIO</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-pedidos')">PEDIDOS</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-clientes')">CLIENTES</button>
+        </div>
+
+        <div id="tab-inventario" class="content active">
+            <div class="card">
+                <h2>Subir Nuevo Perfume</h2>
+                <form id="form-perfume">
+                    <input type="text" id="p-nombre" placeholder="Nombre del perfume" required>
+                    <textarea id="p-desc" placeholder="Descripción corta"></textarea>
+                    <input type="number" id="p-precio" placeholder="Precio (CRC)" required>
+                    <input type="text" id="p-video" placeholder="Link de Video (YouTube/TikTok)">
+                    <label style="font-size: 12px; font-weight: bold; display: block; margin-top: 10px;">Foto del Perfume:</label>
+                    <input type="file" id="p-file" accept="image/*" required>
+                    <select id="p-cat">
+                        <option value="Caballero">Caballero</option>
+                        <option value="Dama">Dama</option>
+                        <option value="Unisex">Unisex</option>
+                    </select>
+                    <select id="p-subcat">
+                        <option value="Árabe">Árabe</option>
+                        <option value="Sport">Sport</option>
+                        <option value="Elegante">Elegante</option>
+                        <option value="Nicho">Nicho</option>
+                    </select>
+                    <button type="submit" id="btn-p" class="btn-main">Guardar en Catálogo</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="tab-pedidos" class="content">
+            <div class="card">
+                <h2>Control de Entregas</h2>
+                <div id="lista-pedidos">Cargando pedidos...</div>
+            </div>
+        </div>
+
+        <div id="tab-clientes" class="content">
+            <div class="card">
+                <h2>Registrar Abono</h2>
+                <input type="tel" id="a-tel" placeholder="Teléfono del cliente">
+                <input type="number" id="a-monto" placeholder="Monto del abono">
+                <button id="btn-abono" class="btn-main" style="background: #27ae60;">Guardar Abono</button>
+            </div>
+            <div class="card">
+                <h2>Base de Datos de Clientes</h2>
+                <div id="lista-clientes">Cargando clientes...</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjFHWA9gA-yNVlFi-sXCl8anbMJhPrTGs",
+            authDomain: "elegants-40696.firebaseapp.com",
+            projectId: "elegants-40696",
+            storageBucket: "elegants-40696.firebasestorage.app",
+            messagingSenderId: "262268889124",
+            appId: "1:262268889124:web:15b81eee4052d6c73f90b1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // --- SEGURIDAD ---
+        const verificarAcceso = () => {
+            const pin = document.getElementById("pin-input").value;
+            if (pin === "2652") {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("manager-content").style.display = "block";
+            } else {
+                alert("Clave incorrecta.");
+                document.getElementById("pin-input").value = "";
+            }
+        };
+        document.getElementById("btn-login").onclick = verificarAcceso;
+
+        // --- PESTAÑAS ---
+        window.openTab = (evt, tabName) => {
+            let contents = document.getElementsByClassName("content");
+            for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+            let buttons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            if(tabName === 'tab-pedidos') cargarPedidos();
+            if(tabName === 'tab-clientes') cargarClientes();
+        };
+
+        // --- GUARDAR CON DIAGNÓSTICO ---
+        document.getElementById("form-perfume").onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("btn-p");
+            btn.disabled = true; 
+            btn.innerText = "Subiendo...";
+
+            const file = document.getElementById("p-file").files[0];
+            
+            try {
+                alert("🚀 Paso 1: Iniciando subida de foto a Storage...");
+                
+                const sRef = ref(storage, `perfumes/${Date.now()}_${file.name}`);
+                const snap = await uploadBytes(sRef, file);
+                alert("✅ Paso 2: Foto subida. Obteniendo link público...");
+
+                const url = await getDownloadURL(snap.ref);
+                alert("✅ Paso 3: Link obtenido. Guardando datos en Firestore...");
+
+                await addDoc(collection(db, "perfumes"), {
+                    nombre: document.getElementById("p-nombre").value,
+                    descripcion: document.getElementById("p-desc").value,
+                    precio: Number(document.getElementById("p-precio").value),
+                    video: document.getElementById("p-video").value,
+                    imagen: url,
+                    categoria: document.getElementById("p-cat").value,
+                    subcategoria: document.getElementById("p-subcat").value,
+                    fecha: new Date()
+                });
+
+                alert("🎉 ¡ÉXITO! El perfume se guardó correctamente en el catálogo.");
+                document.getElementById("form-perfume").reset();
+
+            } catch (err) { 
+                console.error(err);
+                alert("❌ ERROR: " + err.code + "\n" + err.message); 
+            } finally {
+                btn.disabled = false; 
+                btn.innerText = "Guardar en Catálogo";
+            }
+        };
+
+        // --- FUNCIONES ADICIONALES ---
+        async function cargarPedidos() {
+            const snap = await getDocs(query(collection(db, "pedidos"), orderBy("fecha", "desc")));
+            const div = document.getElementById("lista-pedidos");
+            div.innerHTML = "";
+            snap.forEach(d => {
+                const p = d.data();
+                div.innerHTML += `<div class="pedido-item"><strong>${p.clienteNombre}</strong> - ₡${p.total} [${p.estado}]</div>`;
+            });
+        }
+
+        async function cargarClientes() {
+            const snap = await getDocs(collection(db, "clientes"));
+            const div = document.getElementById("lista-clientes");
+            div.innerHTML = "";
+            snap.forEach(d => {
+                const c = d.data();
+                div.innerHTML += `<div class="pedido-item"><strong>${c.nombre}</strong> - ${c.telefono}</div>`;
+            });
+        }
+
+        document.getElementById("btn-abono").onclick = async () => {
+            const tel = document.getElementById("a-tel").value;
+            const monto = Number(document.getElementById("a-monto").value);
+            if(!tel || !monto) return alert("Completa los datos");
+            try {
+                await addDoc(collection(db, "abonos"), { clienteTel: tel, monto: monto, fecha: new Date() });
+                alert("Abono guardado");
+                document.getElementById("a-tel").value = "";
+                document.getElementById("a-monto").value = "";
+            } catch(e) { alert("Error: " + e.message); }
+        };
+    </script>
+</body>
+</html>
