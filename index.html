@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elegánts | Club VIP Perfumería 🇨🇷</title>
+
+    <meta name="description" content="Perfumes y fragancias al por mayor y detalle. Acceso exclusivo VIP.">
+    <meta property="og:title" content="Elegánts | Club VIP Perfumería 🇨🇷">
+    <meta property="og:description" content="Perfumería de lujo. Acumula estrellas, abona a tu cuenta y gestiona tus pedidos.">
+    <meta property="og:image" content="logo.png">
+    <meta property="og:url" content="https://elegants.vercel.app">
+    <meta property="og:type" content="website">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+    <style>
+        :root { --gold: #d4af37; --dark: #0a0a0a; --glass: rgba(255, 255, 255, 0.1); }
+        
+        body { font-family: 'Cormorant Garamond', serif; background: var(--dark); color: white; margin: 0; padding: 0; overflow-x: hidden; font-size: 18px; }
+        
+        body::before { 
+            content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)), url('fondo.jpg') no-repeat center center; 
+            background-size: cover; z-index: -100; 
+        }
+
+        .fuente-elegante { font-family: 'Cormorant Garamond', serif !important; }
+        .num-limpio { font-family: 'Lato', sans-serif !important; }
+
+        /* HEADER */
+        .header-container { background: rgba(0,0,0,0.88); backdrop-filter: blur(20px); padding: 25px 0; border-bottom: 1px solid rgba(212,175,55,0.4); position: relative; z-index: 1000; text-align: center; }
+        .halo-wrapper { background: var(--glass); border: 1px solid rgba(212,175,55,0.5); border-radius: 50px; display: inline-flex; padding: 12px 50px; margin-bottom: 15px; }
+        .halo-wrapper img { width: 150px; }
+        .slogan-principal { font-size: 22px; font-weight: 700; color: var(--gold); letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; }
+
+        .filter-select { 
+            background: #000; border: 1px solid #555; color: var(--gold); padding: 12px 5px; border-radius: 15px; 
+            font-size: 12px; font-weight: 900; text-transform: uppercase; width: 100%; outline: none;
+        }
+
+        /* TENDENCIAS HERO */
+        .hero-tendencia-wrapper { width: 100%; padding: 0 0 25px 0; }
+        .tendencia-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0; padding: 0; scroll-behavior: smooth; }
+        .tendencia-card { flex: 0 0 100%; scroll-snap-align: center; padding: 0 20px; }
+        .tendencia-box {
+            background: linear-gradient(145deg, rgba(212,175,55,0.2), rgba(0,0,0,0.8));
+            border-radius: 35px; border: 1px solid var(--gold); padding: 25px; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        /* PRODUCTOS */
+        .carousel-container { 
+            display: grid; grid-template-rows: repeat(2, auto); grid-auto-flow: column; 
+            grid-auto-columns: calc(45% - 12px); overflow-x: auto; scroll-snap-type: x mandatory; 
+            gap: 18px; padding: 15px 20px; 
+        }
+        .perfume-card { 
+            background: rgba(255,255,255,0.06); border-radius: 25px; border: 1px solid rgba(255,255,255,0.12); 
+            padding: 14px; display: flex; flex-direction: column; scroll-snap-align: start;
+        }
+        .photo-container { width: 100%; aspect-ratio: 1/1; border-radius: 20px; overflow: hidden; background: #000; margin-bottom: 12px; }
+        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* TIPOGRAFÍA XL */
+        .perfume-card h3 { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; height: 36px; overflow: hidden; }
+        .perfume-card p { font-size: 22px; font-weight: 900; color: var(--gold); margin-bottom: 12px; }
+        .btn-add-main { background: var(--gold); color: #000; font-weight: 900; padding: 14px; border-radius: 18px; font-size: 14px; text-transform: uppercase; width: 100%; }
+
+        /* CONTADORES */
+        .qty-controls { display: flex; align-items: center; justify-content: space-between; background: var(--gold); color: black; border-radius: 15px; padding: 6px; margin-top: auto; }
+        .btn-qty { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; font-size: 22px; }
+        .qty-num { font-family: 'Lato', sans-serif; font-weight: 900; font-size: 20px; }
+
+        /* CHECKBOX TÉRMINOS */
+        .terms-wrapper { 
+            background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.3); 
+            padding: 15px; border-radius: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+        }
+        .custom-checkbox { width: 25px; height: 25px; accent-color: var(--gold); cursor: pointer; }
+        .terms-text { font-size: 13px; font-weight: 700; color: #eee; line-height: 1.2; }
+
+        /* INFO BOX FINAL */
+        .info-box-final { 
+            background: rgba(0,0,0,0.7); border: 2px solid var(--gold); border-radius: 35px; 
+            margin: 40px 20px; padding: 30px; text-align: center; backdrop-filter: blur(10px);
+        }
+        .info-item { display: flex; align-items: flex-start; gap: 15px; text-align: left; margin-bottom: 25px; }
+        .info-item i { color: var(--gold); font-size: 24px; margin-top: 4px; }
+        .info-item h4 { font-weight: 900; color: var(--gold); font-size: 16px; text-transform: uppercase; margin-bottom: 5px; }
+        .info-item p { font-size: 14px; color: #ccc; line-height: 1.5; font-weight: 600; }
+
+        /* MODALES */
+        .modal-box { background: #0c0c0c; border: 2px solid var(--gold); border-radius: 35px; width: 94%; max-width: 440px; padding: 30px; text-align: center; color: white; }
+        .input-auth { width: 100%; padding: 18px; margin-bottom: 15px; border-radius: 20px; border: 1px solid #444; background: #000; color: white; text-align: center; font-size: 20px; font-weight: bold; }
+        
+        .btn-perfil-top { position: fixed; top: 20px; right: 20px; background: var(--gold); color: #000; padding: 12px 25px; border-radius: 30px; font-weight: 900; font-size: 14px; z-index: 2500; display: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+
+        .fab { width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; color: white; border: 2px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.7); }
+        .cart-badge { position: absolute; top: -5px; right: -5px; background: white; color: black; font-size: 14px; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid var(--gold); }
+        .scroll-hide::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+
+    <button id="btnMiPerfil" class="btn-perfil-top" onclick="abrirPerfil()"><i class="fas fa-user-circle"></i> MI PERFIL</button>
+
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 class="text-4xl fuente-elegante font-bold italic mb-3 text-[#d4af37]">Bienvenido</h2>
+            <p class="text-stone-300 mb-8 text-xl font-bold">Usa tu número de celular para entrar.</p>
+            <div id="auth-step-1">
+                <input type="tel" id="login-tel" class="input-auth num-limpio" placeholder="Número de Celular">
+                <button onclick="verificarCliente()" class="w-full bg-[#d4af37] text-black py-5 rounded-2xl font-black uppercase text-xl shadow-xl">Entrar</button>
+            </div>
+            <div id="auth-step-2" style="display: none;">
+                <input type="text" id="reg-nombre" class="input-auth" placeholder="Tu Nombre">
+                <button onclick="registrarNuevoCliente()" class="w-full bg-[#d4af37] text-black py-5 rounded-2xl font-black uppercase text-xl shadow-xl">Comenzar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="perfilModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <button onclick="cerrarPerfil()" class="absolute top-5 right-5 text-3xl">✕</button>
+            <h2 class="text-3xl fuente-elegante font-bold text-[#d4af37] mb-2" id="perfil-nombre">...</h2>
+            <p id="perfil-tel" class="text-sm text-gray-500 mb-5 tracking-[4px] font-bold uppercase"></p>
+
+            <div id="contenedor-saldo" style="display: none;" class="saldo-card text-black">
+                <p class="text-xs uppercase mb-1 tracking-widest font-black">Saldo Pendiente</p>
+                <h3 class="text-3xl font-black num-limpio" id="saldo-monto">₡0</h3>
+            </div>
+
+            <div class="bg-[#1a1a1a] p-6 rounded-[35px] border border-[#333] mb-6">
+                <p class="text-xs uppercase font-black tracking-widest mb-5 text-gray-400">Mis Estrellas Ganadas</p>
+                <div class="flex justify-between px-2" id="fidelity-stamps">
+                    <div class="stamp">1</div><div class="stamp">2</div><div class="stamp">3</div><div class="stamp">4</div><div class="stamp">🎁</div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mb-4">
+                <button id="tab-compras" onclick="switchTab('compras')" class="tab-btn active text-sm font-black uppercase">Compras</button>
+                <button id="tab-abonos" onclick="switchTab('abonos')" class="tab-btn text-sm font-black uppercase" style="display: none;">Abonos</button>
+            </div>
+
+            <div id="seccion-compras" class="h-64 overflow-y-auto pr-1 scroll-hide"><div id="lista-historial"></div></div>
+            <div id="seccion-abonos" class="h-64 overflow-y-auto pr-1 scroll-hide" style="display: none;"><div id="lista-abonos"></div></div>
+
+            <button onclick="cerrarSesion()" class="text-red-500 text-sm font-black uppercase mt-8 tracking-widest">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <header class="header-container">
+        <div class="halo-wrapper"><img src="logo.png" alt="Elegánts"></div>
+        <p class="slogan-principal fuente-elegante">Perfumes y fragancias al por mayor y detalle</p>
+        
+        <div class="hero-tendencia-wrapper">
+            <h2 class="text-[#d4af37] fuente-elegante text-2xl font-bold italic mb-3">🔥 TOP TENDENCIAS</h2>
+            <div id="lista-tendencias" class="tendencia-container scroll-hide"></div>
+        </div>
+
+        <div class="px-5 mb-5">
+            <input type="text" id="searchInput" class="w-full max-w-[500px] p-5 rounded-full bg-white/5 border-2 border-[#d4af37] text-center text-white text-xl font-bold outline-none" placeholder="¿Qué fragancia buscas hoy?" oninput="filtrarCatalogo()">
+        </div>
+
+        <div class="flex gap-2 px-4 max-w-[500px] mx-auto">
+            <select id="f-quien" class="filter-select" onchange="filtrarCatalogo()"><option value="">👤 Público</option><option value="Caballero">Caballero</option><option value="Dama">Dama</option><option value="Niño">Niño/a</option><option value="Unisex">Unisex</option></select>
+            <select id="f-estilo" class="filter-select" onchange="filtrarCatalogo()"><option value="">💎 Estilo</option><option value="Árabe">Árabe</option><option value="Nicho">Nicho</option><option value="Diseñador">Diseñador</option><option value="Sport">Sport</option></select>
+            <select id="f-ocasion" class="filter-select" onchange="filtrarCatalogo()"><option value="">⌚ Ocasión</option><option value="Diario">Uso Diario</option><option value="Noche">Noche</option><option value="Oficina">Oficina</option></select>
+        </div>
+    </header>
+
+    <div class="fixed bottom-8 right-5 flex flex-col gap-5 z-[2000]">
+        <div class="fab bg-black" onclick="toggleCart()"><i class="fas fa-shopping-cart text-[#d4af37]"></i><span class="cart-badge" id="cartBadge">0</span></div>
+        <a href="https://wa.me/50660793136" target="_blank" class="fab bg-[#25D366]"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <div id="cartSidebar" class="fixed top-0 right-[-100%] w-full max-w-[440px] h-full bg-[#0a0a0a] z-[3000] transition-all border-l border-[#d4af37] flex flex-col">
+        <div class="p-6 border-b border-[#333] flex justify-between items-center bg-[#111]">
+            <h3 class="fuente-elegante text-3xl text-[#d4af37] font-bold tracking-widest uppercase">MI BOLSO</h3>
+            <button onclick="toggleCart()" class="text-4xl">✕</button>
+        </div>
+        <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-5"></div>
+        <div class="p-6 bg-[#111] border-t border-[#333]">
+            <div id="mayorista-alerta" class="hidden bg-[#d4af37]/15 border-2 border-[#d4af37] text-[#d4af37] p-3 rounded-2xl text-xs font-black uppercase text-center mb-4">🔥 ¡DESCUENTO MAYORISTA APLICADO! (10%)</div>
+            <button onclick="consultarEspecial()" class="w-full text-xs text-gray-500 uppercase font-black mb-4">Consultar por precio especial (+12 piezas)</button>
+            <select id="cart-envio" class="w-full bg-[#000] border-2 border-[#333] text-white p-4 rounded-2xl mb-4 text-sm font-bold" onchange="actualizarCarrito()">
+                <option value="0">Entrega Local (Gratis)</option>
+                <option value="3000">Correos de Costa Rica (+₡3,000)</option>
+            </select>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <select id="provincia" class="w-full bg-[#000] border-2 border-[#333] text-white p-3 rounded-xl text-xs font-bold" onchange="cargarCantones()"><option value="">Provincia...</option></select>
+                <select id="canton" class="w-full bg-[#000] border-2 border-[#333] text-white p-3 rounded-xl text-xs font-bold" onchange="cargarDistritos()" disabled><option value="">Cantón...</option></select>
+            </div>
+            <select id="distrito" class="w-full bg-[#000] border-2 border-[#333] text-white p-3 rounded-xl text-xs font-bold mb-3" disabled><option value="">Distrito...</option></select>
+            <textarea id="cart-direccion" class="w-full bg-[#000] border-2 border-[#333] text-white p-4 rounded-2xl text-sm mb-5 font-bold" placeholder="Escribe tu dirección exacta..."></textarea>
+            
+            <div id="wrapper-terminos" class="terms-wrapper">
+                <input type="checkbox" id="check-terminos" class="custom-checkbox">
+                <label for="check-terminos" class="terms-text italic">He leído y acepto el compromiso de envío, pagos y políticas de Elegánts.</label>
+            </div>
+
+            <div class="flex justify-between font-black text-3xl mb-8"><span>TOTAL:</span><span id="cartTotalFinal" class="text-[#d4af37] num-limpio">₡0</span></div>
+            <button onclick="enviarPedido()" class="w-full py-6 bg-[#25D366] text-black font-black rounded-[25px] flex items-center justify-center gap-3 shadow-2xl text-lg uppercase">Confirmar Pedido</button>
+        </div>
+    </div>
+
+    <main id="catalogo-wrapper" class="pb-10"></main>
+
+    <section class="info-box-final">
+        <h3 class="text-[#d4af37] fuente-elegante text-3xl font-bold italic mb-8">Compromiso Elegánts</h3>
+        <div class="info-item"><i class="fas fa-tags"></i><div><h4>Descuentos Mayoristas</h4><p>Por compras mayores a 6 perfumes obtén un 10% de descuento. Consulta por precios adicionales en compras de 12 o 24 unidades. *Sujeto a stock.</p></div></div>
+        <div class="info-item"><i class="fas fa-truck-fast"></i><div><h4>Envíos y Entregas</h4><p>Tienda 100% Virtual. Envíos exclusivos por Correos de Costa Rica. Hacemos entregas directas depende de tu zona y volumen del pedido.</p></div></div>
+        <div class="info-item"><i class="fas fa-credit-card"></i><div><h4>Métods de Pago</h4><p>Contamos con Sinpe Móvil, Transferencia y Paypal</p></div></div>
+        <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mt-10">© 2026 Elegánts Club VIP - Costa Rica</p>
+    </section>
+
+    <div class="h-32"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjFHWA9gA-yNVlFi-sXCl8anbMJhPrTGs",
+            authDomain: "elegants-40696.firebaseapp.com",
+            projectId: "elegants-40696",
+            storageBucket: "elegants-40696.firebasestorage.app",
+            messagingSenderId: "262268889124",
+            appId: "1:262268889124:web:15b81eee4052d6c73f90b1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let clienteActual = null;
+        let dataOriginal = [];
+        let carrito = {}; 
+        let fuse;
+        let trendInterval;
+
+        window.onload = async () => {
+            await cargarProvincias();
+            const tel = localStorage.getItem("elegants_vip_tel");
+            if (tel) await iniciarSesion(tel);
+            else document.getElementById("authModal").style.display = "flex";
+            
+            // MEMORIA DE TÉRMINOS
+            if(localStorage.getItem("elegants_terms_accepted") === "true") {
+                document.getElementById("wrapper-terminos").style.display = "none";
+                document.getElementById("check-terminos").checked = true;
+            }
+        };
+
+        // --- UBICACIONES ---
+        async function cargarProvincias() {
+            try {
+                const res = await fetch('https://ubicaciones.paginasweb.cr/provincias.json');
+                const data = await res.json();
+                const select = document.getElementById("provincia");
+                for(let key in data) { select.innerHTML += `<option value="${key}">${data[key]}</option>`; }
+            } catch(e) {}
+        }
+        window.cargarCantones = async (autoCanton = null, autoDistrito = null) => {
+            const idProv = document.getElementById("provincia").value;
+            const cantS = document.getElementById("canton");
+            const distS = document.getElementById("distrito");
+            cantS.innerHTML = '<option value="">Cantón...</option>'; distS.innerHTML = '<option value="">Distrito...</option>';
+            if(!idProv) { cantS.disabled = true; distS.disabled = true; return; }
+            cantS.disabled = false;
+            try {
+                const res = await fetch(`https://ubicaciones.paginasweb.cr/provincia/${idProv}/cantones.json`);
+                const data = await res.json();
+                for(let key in data) { cantS.innerHTML += `<option value="${key}">${data[key]}</option>`; }
+                if(autoCanton) { cantS.value = autoCanton; await window.cargarDistritos(autoDistrito); }
+            } catch(e) {}
+        };
+        window.cargarDistritos = async (autoDistrito = null) => {
+            const idProv = document.getElementById("provincia").value;
+            const idCant = document.getElementById("canton").value;
+            const distS = document.getElementById("distrito");
+            distS.innerHTML = '<option value="">Distrito...</option>';
+            if(!idCant) { distS.disabled = true; return; }
+            distS.disabled = false;
+            try {
+                const res = await fetch(`https://ubicaciones.paginasweb.cr/provincia/${idProv}/canton/${idCant}/distritos.json`);
+                const data = await res.json();
+                for(let key in data) { distS.innerHTML += `<option value="${key}">${data[key]}</option>`; }
+                if(autoDistrito) { distS.value = autoDistrito; }
+            } catch(e) {}
+        };
+
+        // --- AUTH ---
+        window.verificarCliente = async () => {
+            const tel = document.getElementById("login-tel").value.trim();
+            if(!tel) return;
+            const docSnap = await getDoc(doc(db, "clientes", tel));
+            if(docSnap.exists()) await iniciarSesion(tel);
+            else { document.getElementById("auth-step-1").style.display = "none"; document.getElementById("auth-step-2").style.display = "block"; }
+        };
+        window.registrarNuevoCliente = async () => {
+            const tel = document.getElementById("login-tel").value.trim();
+            const nombre = document.getElementById("reg-nombre").value.trim();
+            if(!nombre) return;
+            await setDoc(doc(db, "clientes", tel), { nombre, telefono: tel, puntos: 0, esCredito: false, fechaRegistro: new Date() });
+            await iniciarSesion(tel);
+        };
+        async function iniciarSesion(tel) {
+            const docSnap = await getDoc(doc(db, "clientes", tel));
+            clienteActual = docSnap.data();
+            localStorage.setItem("elegants_vip_tel", tel);
+            document.getElementById("authModal").style.display = "none";
+            document.getElementById("btnMiPerfil").style.display = "block";
+            if (clienteActual.provinciaId) {
+                document.getElementById("provincia").value = clienteActual.provinciaId;
+                await window.cargarCantones(clienteActual.cantonId, clienteActual.distritoId);
+            }
+            document.getElementById("cart-direccion").value = clienteActual.direccionExacta || "";
+            cargarTienda();
+        }
+
+        // --- TIENDA ---
+        async function cargarTienda() {
+            const snap = await getDocs(query(collection(db, "perfumes"), orderBy("fecha", "desc")));
+            dataOriginal = []; 
+            snap.forEach(d => dataOriginal.push({ id: d.id, ...d.data() }));
+            fuse = new Fuse(dataOriginal, { keys: ['nombre', 'categoria', 'estilo', 'ocasion'], threshold: 0.4 });
+            renderizar(dataOriginal);
+            iniciarAutoScroll();
+        }
+
+        function renderizar(lista) {
+            const divT = document.getElementById("lista-tendencias");
+            divT.innerHTML = "";
+            lista.slice(0, 5).forEach(p => {
+                const cant = carrito[p.id] || 0;
+                divT.innerHTML += `
+                <div class="tendencia-card">
+                    <div class="tendencia-box">
+                        <img src="${p.imagen}" class="w-full aspect-square rounded-[25px] mb-4 object-cover">
+                        <h3 class="fuente-elegante text-2xl font-bold uppercase mb-1 leading-tight text-white">${p.nombre}</h3>
+                        <p class="text-[#d4af37] font-black text-3xl mb-5 num-limpio">₡${p.precio}</p>
+                        <div id="hero-btn-${p.id}">
+                            ${cant === 0 ? `<button class="bg-white text-black font-black py-4 px-10 rounded-2xl text-sm uppercase shadow-lg" onclick="modificarCantidad('${p.id}', 1)">Añadir al Bolso</button>` : `<div class="qty-controls bg-white text-black max-w-[180px] mx-auto"><div class="btn-qty" onclick="modificarCantidad('${p.id}', -1)">-</div><div class="qty-num">${cant}</div><div class="btn-qty" onclick="modificarCantidad('${p.id}', 1)">+</div></div>`}
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            const wrapper = document.getElementById("catalogo-wrapper");
+            wrapper.innerHTML = "";
+            const cats = [...new Set(lista.map(p => p.categoria || "Colección"))];
+            cats.forEach(cat => {
+                const filtrados = lista.filter(p => (p.categoria || "Colección") === cat);
+                let html = `<div class="category-section mt-10"><h2 class="px-6 fuente-elegante text-2xl font-black border-l-4 border-[#d4af37] ml-4 mb-3 uppercase tracking-widest">${cat}</h2><div class="carousel-container scroll-hide">`;
+                filtrados.forEach(p => {
+                    const cant = carrito[p.id] || 0;
+                    html += `<div class="perfume-card"><div class="photo-container"><img src="${p.imagen}" loading="lazy"></div><h3 class="uppercase">${p.nombre}</h3><p class="num-limpio">₡${p.precio}</p><div id="grid-btn-${p.id}">${cant === 0 ? `<button class="btn-add-main" onclick="modificarCantidad('${p.id}', 1)">Añadir</button>` : `<div class="qty-controls"><div class="btn-qty" onclick="modificarCantidad('${p.id}', -1)">-</div><div class="qty-num">${cant}</div><div class="btn-qty" onclick="modificarCantidad('${p.id}', 1)">+</div></div>`}</div></div>`;
+                });
+                wrapper.innerHTML += html + "</div></div>";
+            });
+        }
+
+        let currentTrendIndex = 0;
+        function iniciarAutoScroll() {
+            if(trendInterval) clearInterval(trendInterval);
+            trendInterval = setInterval(() => {
+                const container = document.getElementById("lista-tendencias");
+                const cards = container.children;
+                if (cards.length > 0) { currentTrendIndex = (currentTrendIndex + 1) % cards.length; container.scrollTo({ left: cards[currentTrendIndex].offsetLeft, behavior: 'smooth' }); }
+            }, 4000);
+        }
+
+        window.modificarCantidad = (id, cambio) => {
+            if(!carrito[id]) carrito[id] = 0;
+            carrito[id] += cambio;
+            if(carrito[id] <= 0) delete carrito[id];
+            renderizar(dataOriginal); 
+            actualizarCarrito();
+        }
+
+        function actualizarCarrito() {
+            const items = document.getElementById("cartItems");
+            let sub = 0; let badge = 0; items.innerHTML = "";
+            for(let id in carrito) {
+                const p = dataOriginal.find(x => x.id === id);
+                const cant = carrito[id];
+                sub += (p.precio * cant); badge += cant;
+                items.innerHTML += `<div class="flex justify-between items-center border-b border-[#333] pb-4 text-xl"><div><p class="font-black uppercase text-base text-white">${p.nombre}</p><p class="text-[#d4af37] text-xs font-bold">${cant} x ₡${p.precio}</p></div><b>₡${(p.precio * cant).toLocaleString()}</b></div>`;
+            }
+            const alerta = document.getElementById("mayorista-alerta");
+            if (badge >= 6) { sub = sub * 0.90; alerta.classList.remove("hidden"); } else { alerta.classList.add("hidden"); }
+            document.getElementById("cartBadge").innerText = badge;
+            const env = parseInt(document.getElementById("cart-envio").value) || 0;
+            document.getElementById("cartTotalFinal").innerText = "₡" + (sub + env).toLocaleString();
+        }
+
+        window.filtrarCatalogo = () => {
+            const s = document.getElementById("searchInput").value.trim();
+            const fQ = document.getElementById("f-quien").value;
+            const fE = document.getElementById("f-estilo").value;
+            const fO = document.getElementById("f-ocasion").value;
+            let filtrados = dataOriginal;
+            if(s) { const result = fuse.search(s); filtrados = result.map(r => r.item); }
+            if(fQ) filtrados = filtrados.filter(p => p.categoria === fQ);
+            if(fE) filtrados = filtrados.filter(p => p.estilo === fE);
+            if(fO) filtrados = filtrados.filter(p => p.ocasion === fO);
+            renderizar(filtrados);
+        };
+
+        window.switchTab = (tab) => {
+            document.getElementById("seccion-compras").style.display = tab === 'compras' ? "block" : "none";
+            document.getElementById("seccion-abonos").style.display = tab === 'abonos' ? "block" : "none";
+            document.getElementById("tab-compras").classList.toggle("active", tab === 'compras');
+            document.getElementById("tab-abonos").classList.toggle("active", tab === 'abonos');
+        };
+
+        window.abrirPerfil = async () => {
+            document.getElementById("perfilModal").style.display = "flex";
+            const snapU = await getDoc(doc(db, "clientes", clienteActual.telefono));
+            const user = snapU.data();
+            document.getElementById("perfil-nombre").innerText = user.nombre;
+            document.getElementById("perfil-tel").innerText = user.telefono;
+            const stamps = document.querySelectorAll(".stamp");
+            stamps.forEach((s, i) => { s.classList.toggle("active", i < (user.puntos || 0)); });
+            const esCr = user.esCredito === true;
+            document.getElementById("contenedor-saldo").style.display = esCr ? "block" : "none";
+            document.getElementById("tab-abonos").style.display = esCr ? "block" : "none";
+            const snapP = await getDocs(query(collection(db, "pedidos"), where("clienteTel", "==", user.telefono), orderBy("fecha", "desc")));
+            const divH = document.getElementById("lista-historial"); divH.innerHTML = "";
+            let tComp = 0;
+            snapP.forEach(docPed => { 
+                const p = docPed.data(); tComp += p.total; 
+                divH.innerHTML += `<div class="historial-item"><p class="text-[#d4af37] font-black text-sm uppercase">${p.fecha.toDate().toLocaleDateString()}</p><p class="text-white font-bold text-base">${p.productosResumen}</p><p class="text-gray-400 font-bold text-sm">Monto: ₡${p.total.toLocaleString()}</p></div>`; 
+            });
+            if(esCr) {
+                const snapA = await getDocs(query(collection(db, "abonos"), where("clienteTel", "==", user.telefono), orderBy("fecha", "desc")));
+                const divA = document.getElementById("lista-abonos"); divA.innerHTML = "";
+                let tAb = 0;
+                snapA.forEach(docAbo => { 
+                    const a = docAbo.data(); tAb += a.monto; 
+                    divA.innerHTML += `<div class="historial-item border-l-4 border-green-500"><div class="flex justify-between font-black text-base text-white"><span>Abono Recibido</span><b>₡${a.monto.toLocaleString()}</b></div><p class="text-xs text-gray-500 mt-1">${a.fecha.toDate().toLocaleDateString()}</p></div>`; 
+                });
+                document.getElementById("saldo-monto").innerText = "₡" + (tComp - tAb).toLocaleString();
+            }
+        };
+
+        window.consultarEspecial = () => { window.location.href = `https://wa.me/50660793136?text=${encodeURIComponent("Hola Edras, me gustaría consultar precio por más de 12 perfumes.")}`; };
+        window.cerrarPerfil = () => document.getElementById("perfilModal").style.display = "none";
+        window.cerrarSesion = () => { localStorage.clear(); location.reload(); };
+        window.toggleCart = () => { const s = document.getElementById("cartSidebar"); s.style.right = s.style.right === "0px" ? "-100%" : "0px"; };
+
+        window.enviarPedido = async () => {
+            if(Object.keys(carrito).length === 0) return alert("Bolso vacío");
+            
+            // VALIDACIÓN DE TÉRMINOS
+            const check = document.getElementById("check-terminos");
+            if(!check.checked) return alert("Debes aceptar los términos y condiciones para continuar.");
+            localStorage.setItem("elegants_terms_accepted", "true");
+            document.getElementById("wrapper-terminos").style.display = "none";
+
+            const pS = document.getElementById("provincia"); const cS = document.getElementById("canton"); const dS = document.getElementById("distrito"); const exactas = document.getElementById("cart-direccion").value.trim();
+            if(!pS.value || !cS.value || !dS.value || !exactas) return alert("Completa tu dirección.");
+            const total = parseInt(document.getElementById("cartTotalFinal").innerText.replace('₡','').replace(/,/g,''));
+            let rP = ""; let tU = 0;
+            for(let id in carrito) { const p = dataOriginal.find(x => x.id === id); rP += `${carrito[id]}x ${p.nombre}, `; tU += carrito[id]; }
+            await updateDoc(doc(db, "clientes", clienteActual.telefono), { provinciaId: pS.value, cantonId: cS.value, distritoId: dS.value, direccionExacta: exactas });
+            await addDoc(collection(db, "pedidos"), { clienteTel: clienteActual.telefono, productosResumen: rP, total: total, fecha: new Date(), estado: "Pendiente" });
+            const dirC = `${pS.options[pS.selectedIndex].text}, ${cS.options[cS.selectedIndex].text}, ${dS.options[dS.selectedIndex].text}. ${exactas}`;
+            let msg = `*PEDIDO VIP - ELEGÁNTS*\n👤 *Cliente:* ${clienteActual.nombre}\n📍 *Dirección:* ${dirC}\n\n*Pedido:*\n`;
+            for(let id in carrito) { const p = dataOriginal.find(x => x.id === id); msg += `- ${carrito[id]}x ${p.nombre} (₡${(p.precio * carrito[id]).toLocaleString()})\n`; }
+            if (tU >= 6) msg += `\n🔥 *DESCUENTO MAYORISTA APLICADO*`;
+            msg += `\n*TOTAL FINAL: ₡${total.toLocaleString()}*`;
+            window.location.href = `https://wa.me/50660793136?text=${encodeURIComponent(msg)}`;
+            carrito = {}; renderizar(dataOriginal); actualizarCarrito(); toggleCart();
+        };
+    </script>
+</body>
+</html>
