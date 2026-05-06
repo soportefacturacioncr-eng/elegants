@@ -1,13 +1,20 @@
 {
-  "name": "Elegánts Perfumería VIP",
+  "name": "Elegánts | Club VIP",
   "short_name": "Elegánts",
-  "description": "Fragancias exclusivas en Costa Rica",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0a0a0a",
-  "theme_color": "#d4af37",
+  "theme_color": "#0a0a0a",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "android-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "android-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
