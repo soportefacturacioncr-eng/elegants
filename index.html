@@ -61,13 +61,14 @@
         .filters-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 500px; margin: 12px auto 0; }
         .filter-select { flex: 1 1 30%; min-width: 90px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.4); color: var(--gold); padding: 8px 4px; border-radius: 15px; font-size: 14px; text-transform: uppercase; font-weight: bold; text-align: center; outline: none; cursor: pointer; backdrop-filter: blur(8px); text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
 
-        /* AJUSTE TENDENCIAS: Más simétrico y fotos sin distorsión */
-        .trending-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 0 15px 20px 15px; scrollbar-width: none; }
+        .trending-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 0 15px 20px 15px; scrollbar-width: none; }
         .trending-carousel::-webkit-scrollbar { display: none; }
-        .trending-card { flex: 0 0 85%; height: 230px; scroll-snap-align: center; position: relative; border-radius: 25px; overflow: hidden; border: 1px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; }
-        .trending-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transition: transform 0.8s; }
-        .trending-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent 80%); z-index: 2; pointer-events: none;}
-        .trending-content { position: relative; z-index: 3; padding: 15px; text-align: left; }
+        .trending-card { flex: 0 0 100%; height: 260px; scroll-snap-align: center; position: relative; border-radius: 30px; overflow: hidden; border: 1px solid var(--gold); box-shadow: 0 15px 30px rgba(0,0,0,0.6); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; }
+        
+        .trending-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; background: rgba(0,0,0,0.4); z-index: 1; transition: transform 0.8s; }
+        
+        .trending-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 80%; background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, transparent); z-index: 2; pointer-events: none;}
+        .trending-content { position: relative; z-index: 3; padding: 20px; text-align: left; }
 
         .category-row { margin-bottom: 25px; }
         .carousel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 5px 15px 15px 15px; scrollbar-width: none; }
@@ -120,12 +121,12 @@
         .info-text { font-size: 17px; color: var(--blanco-esmeralda); line-height: 1.4; margin-bottom: 15px; }
 
         .floating-stack { position: fixed; bottom: 25px; right: 15px; display: flex; flex-direction: column-reverse; gap: 20px; z-index: 2000; }
-        .fab { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--blanco-esmeralda); cursor: pointer; border: 2px solid var(--gold); box-shadow: 0 10px 20px rgba(0,0,0,0.6); position: relative; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); text-shadow: none; }
         
-        /* ACTUALIZACIÓN WHATSAPP: Color Dorado VIP */
-        .btn-wa { background: #d4af37 !important; border-color: #fff0aa !important; }
-        .btn-wa i { color: #000 !important; }
+        /* ACTUALIZACIÓN: Renombramos 'fab' a 'btn-flotante' para que NO choque con FontAwesome */
+        .btn-flotante { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--blanco-esmeralda); cursor: pointer; border: 2px solid var(--gold); box-shadow: 0 10px 20px rgba(0,0,0,0.6); position: relative; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); text-shadow: none; }
         
+        /* ACTUALIZACIÓN: Botón de WA totalmente limpio, sin bordes heredados */
+        .btn-wa { background-color: #25D366 !important; border: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 4px 15px rgba(37,211,102,0.4) !important; }
         .btn-cart { background: rgba(20, 20, 20, 0.9); color: var(--gold); }
         
         .pulse-cart { animation: shadow-pulse-cart 2s infinite; }
@@ -137,9 +138,9 @@
         
         .pulse-wa { animation: shadow-pulse-wa 2s infinite; }
         @keyframes shadow-pulse-wa {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.8); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
 
         .cart-badge { position: absolute; top: -5px; right: -5px; background: var(--gold); color: #000; font-size: 16px; width: 30px; height: 30px; border-radius: 50%; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #000; z-index: 10; display: none; text-shadow: none; }
@@ -159,8 +160,8 @@
         .checkmark:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 6px; height: 12px; border: solid black; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .check-container input:checked ~ .checkmark:after { display: block; }
 
-        /* ACTUALIZACIÓN FOOTER: Más delgado */
-        .footer-esmerilado { background: rgba(255,255,255,0.06); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(212,175,55,0.3); padding: 10px 15px 75px 15px; text-align: center; color: var(--gold); margin-top: 20px; z-index: 10; position: relative; }
+        /* ACTUALIZACIÓN: Renglón (padding) del footer más angosto y compacto */
+        .footer-esmerilado { background: rgba(255,255,255,0.06); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(212,175,55,0.3); padding: 10px 15px 15px 15px; text-align: center; color: var(--gold); margin-top: 15px; z-index: 10; position: relative; }
 
         .desc-compacta {
             display: -webkit-box;
@@ -265,8 +266,8 @@
         <div class="modal-box !max-w-md !p-8 flex flex-col" onclick="event.stopPropagation()">
             <button onclick="cerrarDetalle()" class="absolute top-5 right-5 text-3xl text-white z-10 w-10 h-10 flex items-center justify-center bg-black/50 rounded-full border border-white/30">✕</button>
             
-            <div class="relative w-full h-48 max-h-[25vh] mb-4 rounded-2xl overflow-hidden bg-[rgba(0,0,0,0.3)] shadow-lg border border-white/10 shrink-0">
-                <img id="detalle-img" src="" class="w-full h-full object-cover">
+            <div class="relative w-full h-64 max-h-[35vh] mb-4 rounded-2xl overflow-hidden bg-[rgba(0,0,0,0.2)] shadow-inner border border-white/10 shrink-0 flex justify-center items-center p-2">
+                <img id="detalle-img" src="" class="w-full h-full object-contain">
             </div>
             
             <h2 id="detalle-nombre" class="text-3xl fuente-elegante font-bold uppercase mb-1 text-white shrink-0">Nombre</h2>
@@ -379,16 +380,16 @@
     </div>
 
     <footer class="footer-esmerilado num-limpio">
-        <p class="mb-1 text-[14px] font-bold text-white tracking-widest uppercase">Aguas Zarcas, San Carlos, Costa Rica</p>
-        <p class="text-gray-200 opacity-80 text-[12px] tracking-widest" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">© 2026 Elegánts. Todos los derechos reservados.</p>
+        <p class="mb-0 text-[14px] font-bold text-white tracking-widest uppercase">Aguas Zarcas, San Carlos, Costa Rica</p>
+        <p class="text-gray-200 opacity-80 text-[12px] tracking-widest mt-1" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">© 2026 Elegánts. Todos los derechos reservados.</p>
     </footer>
 
     <div class="floating-stack">
-        <div class="fab btn-cart pulse-cart" onclick="toggleCart()">
+        <div class="btn-flotante btn-cart pulse-cart" onclick="toggleCart()">
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-badge" id="cartBadge" style="color: #000 !important; font-family: 'Lato', sans-serif;"></span>
         </div>
-        <a href="https://wa.me/50662374678" target="_blank" class="fab btn-wa pulse-wa"><i class="fab fa-whatsapp" style="text-shadow: none;"></i></a>
+        <a href="https://wa.me/50662374678" target="_blank" class="btn-flotante btn-wa pulse-wa"><i class="fab fa-whatsapp text-white" style="text-shadow: none;"></i></a>
     </div>
 
     <script type="module">
@@ -501,13 +502,14 @@
             }
             try {
                 const res = await fetch(`https://ubicaciones.paginasweb.cr/provincia/${pId}/cantones.json`);
+                if(!res.ok) throw new Error("Error en respuesta de la API");
                 const data = await res.json();
                 let options = '<option value="">Cantón...</option>';
                 for(let key in data) { options += `<option value="${key}">${data[key]}</option>`; }
                 selCant.innerHTML = options;
             } catch(e) {
                 console.error("Error cargando cantones", e);
-                selCant.innerHTML = '<option value="">Error al cargar</option>';
+                selCant.innerHTML = '<option value="">Error, intente de nuevo</option>';
             }
         };
 
@@ -524,13 +526,14 @@
             }
             try {
                 const res = await fetch(`https://ubicaciones.paginasweb.cr/provincia/${pId}/canton/${cId}/distritos.json`);
+                if(!res.ok) throw new Error("Error en respuesta de la API");
                 const data = await res.json();
                 let options = '<option value="">Distrito...</option>';
                 for(let key in data) { options += `<option value="${key}">${data[key]}</option>`; }
                 selDist.innerHTML = options;
             } catch(e) {
                 console.error("Error cargando distritos", e);
-                selDist.innerHTML = '<option value="">Error al cargar</option>';
+                selDist.innerHTML = '<option value="">Error, intente de nuevo</option>';
             }
         };
 
@@ -664,9 +667,9 @@
                             <div class="trending-overlay"></div>
                             <div class="trending-content relative z-10">
                                 <span class="tag bg-[#d4af37] text-black font-bold px-3 py-1 mb-2 text-[14px]">#1 EN VENTAS</span>
-                                <h3 class="fuente-elegante text-3xl font-bold uppercase text-white leading-tight" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.9);">${p.nombre}</h3>
+                                <h3 class="fuente-elegante text-4xl font-bold uppercase text-white leading-tight" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.9);">${p.nombre}</h3>
                                 <div class="flex justify-between items-center mt-3">
-                                    <div class="num-limpio font-bold text-3xl text-[#d4af37]" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.9);">₡${p.precio}</div>
+                                    <div class="num-limpio font-bold text-4xl text-[#d4af37]" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.9);">₡${p.precio}</div>
                                     <div class="flex flex-col gap-2 items-end">
                                         <div class="qty-controls btn-controls-card controls-${p.id}" style="display:none;" onclick="event.stopPropagation()">
                                             <button class="qty-btn" onclick="updateCartFromCard('${p.id}', -1)">-</button>
@@ -715,7 +718,7 @@
                         if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 20) {
                             carousel.scrollTo({ left: 0, behavior: 'smooth' });
                         } else {
-                            carousel.scrollBy({ left: carousel.clientWidth * 0.85, behavior: 'smooth' });
+                            carousel.scrollBy({ left: carousel.clientWidth, behavior: 'smooth' });
                         }
                     }, 3000);
                 }
