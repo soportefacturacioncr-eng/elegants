@@ -46,14 +46,14 @@
         
         .halo-wrapper { 
             display: flex; justify-content: center; align-items: center; 
-            margin: 0 auto 15px auto; padding: 8px; width: 85%; max-width: 280px; 
+            margin: 0 auto 10px auto; padding: 5px; width: 70%; max-width: 220px; 
             background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); 
-            border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 20px; 
+            border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 15px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.1);
         }
-        .halo-wrapper img { width: 100%; height: auto; display: block; border-radius: 12px; }
+        .halo-wrapper img { width: 100%; height: auto; display: block; border-radius: 10px; }
         
-        .slogan { font-size: 22px; color: var(--blanco-esmeralda); letter-spacing: 1px; margin-bottom: 20px; font-weight: 500; font-style: italic; line-height: 1.4; padding: 0 15px; text-shadow: 2px 2px 6px rgba(0,0,0,0.9); }
+        .slogan { font-size: 20px; color: var(--blanco-esmeralda); letter-spacing: 1px; margin-bottom: 15px; font-weight: 500; font-style: italic; line-height: 1.3; padding: 0 15px; text-shadow: 2px 2px 6px rgba(0,0,0,0.9); }
 
         .search-input { width: 100%; max-width: 400px; padding: 12px 18px; border-radius: 25px; background: #ffffff; border: 2px solid var(--gold); color: #000000; font-size: 16px; outline: none; display: block; margin: 0 auto; text-align: center; font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.3); text-shadow: none; }
         .search-input::placeholder { color: #666666; font-weight: normal; }
@@ -61,12 +61,13 @@
         .filters-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 500px; margin: 12px auto 0; }
         .filter-select { flex: 1 1 30%; min-width: 90px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.4); color: var(--gold); padding: 8px 4px; border-radius: 15px; font-size: 14px; text-transform: uppercase; font-weight: bold; text-align: center; outline: none; cursor: pointer; backdrop-filter: blur(8px); text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
 
-        .trending-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 0 15px 20px 15px; scrollbar-width: none; }
+        /* AJUSTE TENDENCIAS: Más simétrico y fotos sin distorsión */
+        .trending-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 0 15px 20px 15px; scrollbar-width: none; }
         .trending-carousel::-webkit-scrollbar { display: none; }
-        .trending-card { flex: 0 0 100%; height: 260px; scroll-snap-align: center; position: relative; border-radius: 30px; overflow: hidden; border: 1px solid var(--gold); box-shadow: 0 15px 30px rgba(0,0,0,0.6); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; }
-        .trending-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: rgba(0,0,0,0.4); z-index: 1; transition: transform 0.8s; }
-        .trending-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 80%; background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, transparent); z-index: 2; pointer-events: none;}
-        .trending-content { position: relative; z-index: 3; padding: 20px; text-align: left; }
+        .trending-card { flex: 0 0 85%; height: 230px; scroll-snap-align: center; position: relative; border-radius: 25px; overflow: hidden; border: 1px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; }
+        .trending-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transition: transform 0.8s; }
+        .trending-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent 80%); z-index: 2; pointer-events: none;}
+        .trending-content { position: relative; z-index: 3; padding: 15px; text-align: left; }
 
         .category-row { margin-bottom: 25px; }
         .carousel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 5px 15px 15px 15px; scrollbar-width: none; }
@@ -114,14 +115,17 @@
 
         .btn-add { padding: 12px; border-radius: 12px; font-size: 16px; width: 100%; }
 
-        .info-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.4); border-radius: 20px; padding: 25px; margin: 20px 15px 40px 15px; text-align: left; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .info-title { color: var(--gold); font-size: 20px; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
-        .info-text { font-size: 19px; color: var(--blanco-esmeralda); line-height: 1.6; margin-bottom: 20px; }
+        .info-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.4); border-radius: 20px; padding: 15px; margin: 15px 15px 25px 15px; text-align: left; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .info-title { color: var(--gold); font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+        .info-text { font-size: 17px; color: var(--blanco-esmeralda); line-height: 1.4; margin-bottom: 15px; }
 
         .floating-stack { position: fixed; bottom: 25px; right: 15px; display: flex; flex-direction: column-reverse; gap: 20px; z-index: 2000; }
         .fab { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--blanco-esmeralda); cursor: pointer; border: 2px solid var(--gold); box-shadow: 0 10px 20px rgba(0,0,0,0.6); position: relative; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); text-shadow: none; }
         
-        .btn-wa { background: #25D366 !important; border-color: #25D366 !important; }
+        /* ACTUALIZACIÓN WHATSAPP: Color Dorado VIP */
+        .btn-wa { background: #d4af37 !important; border-color: #fff0aa !important; }
+        .btn-wa i { color: #000 !important; }
+        
         .btn-cart { background: rgba(20, 20, 20, 0.9); color: var(--gold); }
         
         .pulse-cart { animation: shadow-pulse-cart 2s infinite; }
@@ -133,9 +137,9 @@
         
         .pulse-wa { animation: shadow-pulse-wa 2s infinite; }
         @keyframes shadow-pulse-wa {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
         .cart-badge { position: absolute; top: -5px; right: -5px; background: var(--gold); color: #000; font-size: 16px; width: 30px; height: 30px; border-radius: 50%; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #000; z-index: 10; display: none; text-shadow: none; }
@@ -155,7 +159,8 @@
         .checkmark:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 6px; height: 12px; border: solid black; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .check-container input:checked ~ .checkmark:after { display: block; }
 
-        .footer-esmerilado { background: rgba(255,255,255,0.06); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(212,175,55,0.3); padding: 30px 15px 95px 15px; text-align: center; color: var(--gold); margin-top: 20px; z-index: 10; position: relative; }
+        /* ACTUALIZACIÓN FOOTER: Más delgado */
+        .footer-esmerilado { background: rgba(255,255,255,0.06); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(212,175,55,0.3); padding: 10px 15px 75px 15px; text-align: center; color: var(--gold); margin-top: 20px; z-index: 10; position: relative; }
 
         .desc-compacta {
             display: -webkit-box;
@@ -167,6 +172,12 @@
             position: relative;
         }
         .leer-mas-link { color: var(--gold); font-size: 14px; font-weight: bold; text-decoration: underline; margin-top: -5px; margin-bottom: 10px; display: block; cursor: pointer; }
+
+        .fa-instagram.ig-color {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
 <body>
@@ -213,8 +224,8 @@
                     <div class="bg-[rgba(255,255,255,0.1)] backdrop-blur-md p-4 rounded-2xl border border-white/20 mb-4">
                         <h3 class="text-left font-bold text-[14px] uppercase text-white mb-3">Mi Dirección de Entrega</h3>
                         <div class="grid grid-cols-2 gap-2 mb-2">
-                            <select id="perfil-provincia" class="input-auth !p-2 !text-[15px] !mb-0"><option value="">Provincia...</option></select>
-                            <select id="perfil-canton" class="input-auth !p-2 !text-[15px] !mb-0"><option value="">Cantón...</option></select>
+                            <select id="perfil-provincia" class="input-auth !p-2 !text-[15px] !mb-0" onchange="cargarCantones('perfil')"><option value="">Provincia...</option></select>
+                            <select id="perfil-canton" class="input-auth !p-2 !text-[15px] !mb-0" onchange="cargarDistritos('perfil')"><option value="">Cantón...</option></select>
                         </div>
                         <select id="perfil-distrito" class="input-auth !p-2 !text-[15px] !mb-2 w-full"><option value="">Distrito...</option></select>
                         <textarea id="perfil-direccion" class="input-auth !p-2 !text-[15px] !mb-2 h-16 w-full" placeholder="Señas exactas para entrega..."></textarea>
@@ -354,24 +365,22 @@
         <div class="info-title"><i class="fas fa-tags"></i> Ventas por Mayor</div>
         <div class="info-text">
             ¡Aprovecha nuestros descuentos automáticos en el carrito!
-            <ul style="list-style: none; padding: 0; margin-top: 12px; color: var(--gold); font-size: 19px;">
-                <li class="mb-2">• 6 a 11 unds: <strong class="text-white">10% OFF</strong></li>
-                <li class="mb-2">• 12 a 17 unds: <strong class="text-white">15% OFF</strong></li>
-                <li class="mb-2">• 18 a 23 unds: <strong class="text-white">20% OFF</strong></li>
+            <ul style="list-style: none; padding: 0; margin-top: 8px; color: var(--gold); font-size: 17px;">
+                <li class="mb-1">• 6 a 11 unds: <strong class="text-white">10% OFF</strong></li>
+                <li class="mb-1">• 12 a 17 unds: <strong class="text-white">15% OFF</strong></li>
+                <li class="mb-1">• 18 a 23 unds: <strong class="text-white">20% OFF</strong></li>
                 <li>• 24 o más unds: <strong class="text-white">25% OFF</strong></li>
             </ul>
         </div>
-        <div class="info-title mt-6"><i class="fas fa-truck"></i> Entregas y Envíos</div>
+        <div class="info-title mt-4"><i class="fas fa-truck"></i> Entregas y Envíos</div>
         <p class="info-text">Envíos por Correos de Costa Rica o entregas a domicilio sin costo en zonas seleccionadas.</p>
         <div class="info-title"><i class="fas fa-credit-card"></i> Formas de Pago</div>
         <p class="info-text">SINPE Móvil, Transferencia o PayPal.</p>
-        <div class="info-title"><i class="fas fa-info-circle"></i> Ayuda e Información</div>
-        <p class="info-text">Para más detalles, contáctanos por WhatsApp directamente.</p>
     </div>
 
     <footer class="footer-esmerilado num-limpio">
-        <p class="mb-2 text-[15px] sm:text-[17px] font-bold text-white tracking-widest uppercase">Aguas Zarcas, San Carlos, Costa Rica</p>
-        <p class="text-gray-200 opacity-90 text-[13px] sm:text-[15px] tracking-widest mt-2" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">• © 2026 Elegánts. Todos los derechos reservados. •</p>
+        <p class="mb-1 text-[14px] font-bold text-white tracking-widest uppercase">Aguas Zarcas, San Carlos, Costa Rica</p>
+        <p class="text-gray-200 opacity-80 text-[12px] tracking-widest" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">© 2026 Elegánts. Todos los derechos reservados.</p>
     </footer>
 
     <div class="floating-stack">
@@ -379,7 +388,7 @@
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-badge" id="cartBadge" style="color: #000 !important; font-family: 'Lato', sans-serif;"></span>
         </div>
-        <a href="https://wa.me/50662374678" target="_blank" class="fab btn-wa pulse-wa"><i class="fab fa-whatsapp text-white" style="text-shadow: none;"></i></a>
+        <a href="https://wa.me/50662374678" target="_blank" class="fab btn-wa pulse-wa"><i class="fab fa-whatsapp" style="text-shadow: none;"></i></a>
     </div>
 
     <script type="module">
@@ -438,7 +447,7 @@
                     const data = docSnap.data();
                     let htmlIconos = "";
                     
-                    if (data.instagram) htmlIconos += `<a href="${data.instagram}" target="_blank" class="text-4xl text-white hover:text-[#d4af37] transition-all transform hover:scale-110" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.8);"><i class="fab fa-instagram"></i></a>`;
+                    if (data.instagram) htmlIconos += `<a href="${data.instagram}" target="_blank" class="text-4xl hover:scale-110 transition-all transform" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.8);"><i class="fab fa-instagram ig-color"></i></a>`;
                     if (data.facebook) htmlIconos += `<a href="${data.facebook}" target="_blank" class="text-4xl text-white hover:text-[#d4af37] transition-all transform hover:scale-110" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.8);"><i class="fab fa-facebook"></i></a>`;
                     if (data.tiktok) htmlIconos += `<a href="${data.tiktok}" target="_blank" class="text-4xl text-white hover:text-[#d4af37] transition-all transform hover:scale-110" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.8);"><i class="fab fa-tiktok"></i></a>`;
                     if (data.twitter) htmlIconos += `<a href="${data.twitter}" target="_blank" class="text-4xl text-white hover:text-[#d4af37] transition-all transform hover:scale-110" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.8);"><i class="fab fa-twitter"></i></a>`;
@@ -458,10 +467,10 @@
 
         window.onload = async () => {
             cargarRedesSociales(); 
-            cargarTienda(); // Ahora en tiempo real independientemente del login
+            cargarTienda(); 
             await cargarProvinciasAPI();
             const telGuardado = localStorage.getItem("elegants_vip_tel");
-            if (telGuardado) iniciarSesion(telGuardado); // onSnapshot hace el resto
+            if (telGuardado) iniciarSesion(telGuardado); 
             else document.getElementById("authModal").style.display = "flex";
         };
 
@@ -478,30 +487,51 @@
         }
 
         window.cargarCantones = async (prefix) => {
-            const pId = document.getElementById(`${prefix}-provincia`).value;
+            const provSelect = document.getElementById(`${prefix}-provincia`);
+            const pId = provSelect.value;
             const selCant = document.getElementById(`${prefix}-canton`);
             const selDist = document.getElementById(`${prefix}-distrito`);
-            selCant.innerHTML = '<option value="">Cantón...</option>';
+            
+            selCant.innerHTML = '<option value="">Cargando...</option>';
             selDist.innerHTML = '<option value="">Distrito...</option>';
-            if(!pId) return;
+            
+            if(!pId) {
+                selCant.innerHTML = '<option value="">Cantón...</option>';
+                return;
+            }
             try {
                 const res = await fetch(`https://ubicaciones.paginasweb.cr/provincia/${pId}/cantones.json`);
                 const data = await res.json();
-                for(let key in data) { selCant.innerHTML += `<option value="${key}">${data[key]}</option>`; }
-            } catch(e) {}
+                let options = '<option value="">Cantón...</option>';
+                for(let key in data) { options += `<option value="${key}">${data[key]}</option>`; }
+                selCant.innerHTML = options;
+            } catch(e) {
+                console.error("Error cargando cantones", e);
+                selCant.innerHTML = '<option value="">Error al cargar</option>';
+            }
         };
 
         window.cargarDistritos = async (prefix) => {
             const pId = document.getElementById(`${prefix}-provincia`).value;
             const cId = document.getElementById(`${prefix}-canton`).value; 
             const selDist = document.getElementById(`${prefix}-distrito`);
-            selDist.innerHTML = '<option value="">Distrito...</option>';
-            if(!pId || !cId) return;
+            
+            selDist.innerHTML = '<option value="">Cargando...</option>';
+            
+            if(!pId || !cId) {
+                selDist.innerHTML = '<option value="">Distrito...</option>';
+                return;
+            }
             try {
                 const res = await fetch(`https://ubicaciones.paginasweb.cr/provincia/${pId}/canton/${cId}/distritos.json`);
                 const data = await res.json();
-                for(let key in data) { selDist.innerHTML += `<option value="${key}">${data[key]}</option>`; }
-            } catch(e) {}
+                let options = '<option value="">Distrito...</option>';
+                for(let key in data) { options += `<option value="${key}">${data[key]}</option>`; }
+                selDist.innerHTML = options;
+            } catch(e) {
+                console.error("Error cargando distritos", e);
+                selDist.innerHTML = '<option value="">Error al cargar</option>';
+            }
         };
 
         function iniciarSesion(tel) {
@@ -543,10 +573,9 @@
             const tel = document.getElementById("login-tel").value.trim();
             if (!tel) return alert("Ingresa tu número.");
             
-            // Reemplazo de getDoc estático para fluir directo con onSnapshot en iniciarSesion
             const unsub = onSnapshot(doc(db, "clientes", tel), (docSnap) => {
                 if (docSnap.exists()) {
-                    unsub(); // Desconectamos este listener temporal
+                    unsub(); 
                     iniciarSesion(tel);
                 } else { 
                     unsub();
@@ -569,7 +598,7 @@
             await setDoc(doc(db, "clientes", tel), { 
                 nombre, 
                 telefono: tel, 
-                tipoCliente: "Contado", // Se alinea con el Manager
+                tipoCliente: "Contado", 
                 saldo: 0, 
                 fechaRegistro: new Date(),
                 provId, cantId, distId, direccion 
@@ -594,14 +623,13 @@
         window.cerrarSesion = () => { localStorage.removeItem("elegants_vip_tel"); window.location.reload(); };
 
         function cargarTienda() {
-            // Sincronización en tiempo real con el Manager. Filtra los ocultos inmediatamente.
             onSnapshot(query(collection(db, "perfumes"), orderBy("fecha", "desc")), (snap) => {
                 dataOriginal = []; 
                 snap.forEach(d => {
                     const p = { id: d.id, ...d.data() };
                     if(!p.oculto) dataOriginal.push(p); 
                 });
-                filtrarCatalogo(); // Vuelve a aplicar los filtros que el cliente tenga activos
+                filtrarCatalogo(); 
             });
         }
 
@@ -636,9 +664,9 @@
                             <div class="trending-overlay"></div>
                             <div class="trending-content relative z-10">
                                 <span class="tag bg-[#d4af37] text-black font-bold px-3 py-1 mb-2 text-[14px]">#1 EN VENTAS</span>
-                                <h3 class="fuente-elegante text-4xl font-bold uppercase text-white leading-tight" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.9);">${p.nombre}</h3>
+                                <h3 class="fuente-elegante text-3xl font-bold uppercase text-white leading-tight" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.9);">${p.nombre}</h3>
                                 <div class="flex justify-between items-center mt-3">
-                                    <div class="num-limpio font-bold text-4xl text-[#d4af37]" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.9);">₡${p.precio}</div>
+                                    <div class="num-limpio font-bold text-3xl text-[#d4af37]" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.9);">₡${p.precio}</div>
                                     <div class="flex flex-col gap-2 items-end">
                                         <div class="qty-controls btn-controls-card controls-${p.id}" style="display:none;" onclick="event.stopPropagation()">
                                             <button class="qty-btn" onclick="updateCartFromCard('${p.id}', -1)">-</button>
@@ -687,7 +715,7 @@
                         if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 20) {
                             carousel.scrollTo({ left: 0, behavior: 'smooth' });
                         } else {
-                            carousel.scrollBy({ left: carousel.clientWidth, behavior: 'smooth' });
+                            carousel.scrollBy({ left: carousel.clientWidth * 0.85, behavior: 'smooth' });
                         }
                     }, 3000);
                 }
@@ -850,7 +878,6 @@
             const btnTabCredito = document.getElementById("btn-tab-credito");
             const listaAbonos = document.getElementById("lista-abonos");
             
-            // Lógica Sincronizada y en tiempo real
             if (clienteActual.tipoCliente === "Crédito" || clienteActual.tipoCliente === "Ambos" || clienteActual.saldo > 0) {
                 btnTabCredito.style.display = "inline-block";
                 
@@ -915,7 +942,6 @@
             const costoEnvio = parseInt(tipoEnvio.value) || 0;
             const totalFinal = subtotalConDescuento + costoEnvio;
 
-            // 1. Enviar el pedido a la base de datos (Directo al Manager de Edras)
             try {
                 for (let p of carrito) {
                     let precioItemConDescuento = p.precio * (1 - descuentoPorcentaje);
@@ -947,12 +973,10 @@
                 console.error("Error comunicando con Logística del Manager", e);
             }
 
-            // 2. Generar y abrir el mensaje de WhatsApp
             let msg = `*PEDIDO ELEGÁNTS*\n👤 Cliente: ${clienteActual.nombre}\n📱 Teléfono: ${clienteActual.telefono}\n🚚 Entrega: ${tipoEnvio.options[tipoEnvio.selectedIndex].text}\n📍 Ubicación: ${provSel.options[provSel.selectedIndex].text}, ${cantSel.options[cantSel.selectedIndex].text}, ${distSel.options[distSel.selectedIndex].text}\n🏠 Dirección: ${dir}\n\n*Detalle del Pedido:*\n`;
             carrito.forEach(p => msg += `- ${p.nombre} (x${p.cantidad})\n`);
             msg += `\n*TOTAL FINAL: ₡${totalFinal}*`;
             
-            // Limpieza UI Local
             carrito = [];
             actualizarCarrito();
             toggleCart();
