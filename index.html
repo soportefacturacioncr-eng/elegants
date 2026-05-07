@@ -191,6 +191,7 @@
 
     <div id="authModal" class="modal-overlay" style="display: none;">
         <div class="modal-box">
+            <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-2xl text-white z-10 w-8 h-8 flex items-center justify-center bg-black/40 rounded-full border border-white/20">✕</button>
             <h2 class="text-5xl fuente-elegante font-bold italic mb-4 text-[#d4af37]">Acceso VIP</h2>
             <div id="auth-step-1">
                 <div class="mb-5 text-gray-100 text-[18px] leading-snug px-2" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
@@ -432,6 +433,8 @@
             }
         });
 
+        window.cerrarAuth = () => { document.getElementById("authModal").style.display = "none"; };
+
         window.switchTab = (tabId) => {
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -480,8 +483,9 @@
             cargarTienda(); 
             await cargarProvinciasAPI();
             const telGuardado = localStorage.getItem("elegants_vip_tel");
-            if (telGuardado) iniciarSesion(telGuardado); 
-            else document.getElementById("authModal").style.display = "flex";
+            if (telGuardado) {
+                iniciarSesion(telGuardado); 
+            }
         };
 
         async function cargarProvinciasAPI() {
@@ -551,7 +555,6 @@
                 if(docSnap.exists()){
                     clienteActual = docSnap.data();
                     localStorage.setItem("elegants_vip_tel", tel);
-                    document.getElementById("authModal").style.display = "none";
                     document.getElementById("btnMiPerfil").style.display = "block";
                     
                     const nombreMostrar = clienteActual.nombre ? clienteActual.nombre : "Cliente VIP";
@@ -578,7 +581,8 @@
                     }
                 } else {
                     localStorage.removeItem("elegants_vip_tel");
-                    document.getElementById("authModal").style.display = "flex";
+                    clienteActual = null;
+                    document.getElementById("btnMiPerfil").style.display = "none";
                 }
             });
         }
@@ -597,8 +601,15 @@
                         saldo: 0, 
                         fechaRegistro: new Date()
                     });
+                    localStorage.setItem("elegants_vip_tel", tel);
+                    document.getElementById("auth-step-1").style.display = "none"; 
+                    document.getElementById("auth-step-2").style.display = "block"; 
+                } else {
+                    iniciarSesion(tel);
+                    document.getElementById("authModal").style.display = "none";
+                    alert("¡Bienvenido de nuevo! Ya puedes confirmar tu pedido.");
+                    toggleCart();
                 }
-                iniciarSesion(tel);
             });
         };
 
@@ -617,6 +628,7 @@
                 nombre, provId, cantId, distId, direccion 
             }, { merge: true });
             
+            iniciarSesion(tel);
             document.getElementById("authModal").style.display = "none";
             alert("¡Datos guardados! Ya puedes confirmar tu pedido.");
             toggleCart();
@@ -875,6 +887,8 @@
                     let addressHtml = clienteActual.direccion ? `<p class="mt-2 text-[15px]"><i class="fas fa-map-marker-alt text-[#d4af37] w-5"></i> ${locationString}<br><span class="pl-5 text-gray-200">${clienteActual.direccion}</span></p>` : `<p class="mt-2 text-[15px] text-[#ff7b7b] font-bold"><i class="fas fa-exclamation-triangle w-5"></i> Debes actualizar tu dirección en el Perfil.</p>`;
                     infoBox.innerHTML = `<div class="bg-[rgba(255,255,255,0.1)] p-4 rounded-xl border border-white/20 mb-2 text-white shadow-lg"><p class="font-bold text-[#d4af37] text-2xl mb-1"><i class="fas fa-user-circle"></i> ${clienteActual.nombre}</p><p class="text-[17px]"><i class="fas fa-phone-alt text-[#d4af37] w-5"></i> ${clienteActual.telefono}</p>${addressHtml}</div>`;
                     infoBox.classList.remove('hidden');
+                } else {
+                    document.getElementById('cartClientInfo').classList.add('hidden');
                 }
             } else overlay.classList.add('hidden');
         };
@@ -932,8 +946,17 @@
         window.enviarPedido = async () => {
             if(!carrito.length) return alert("El carrito está vacío.");
             
+            if (!clienteActual) {
+                alert("Para procesar tu pedido, necesitamos tus datos.");
+                toggleCart(); 
+                document.getElementById("authModal").style.display = "flex";
+                document.getElementById("auth-step-1").style.display = "block";
+                document.getElementById("auth-step-2").style.display = "none"; 
+                return; 
+            }
+
             if (!clienteActual.nombre || !clienteActual.provId || !clienteActual.cantId || !clienteActual.distId || !clienteActual.direccion) {
-                alert("Para procesar tu primer pedido, necesitamos tus datos de entrega.");
+                alert("Para procesar tu pedido, necesitamos tu dirección de entrega.");
                 toggleCart(); 
                 document.getElementById("authModal").style.display = "flex";
                 document.getElementById("auth-step-1").style.display = "none";
