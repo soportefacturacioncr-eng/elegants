@@ -553,7 +553,9 @@
                     localStorage.setItem("elegants_vip_tel", tel);
                     document.getElementById("authModal").style.display = "none";
                     document.getElementById("btnMiPerfil").style.display = "block";
-                    document.getElementById("perfil-nombre").innerText = `Hola, ${clienteActual.nombre}`;
+                    
+                    const nombreMostrar = clienteActual.nombre ? clienteActual.nombre : "Cliente VIP";
+                    document.getElementById("perfil-nombre").innerText = `Hola, ${nombreMostrar}`;
                     
                     if(clienteActual.tipoCliente === "Crédito" || clienteActual.tipoCliente === "Ambos" || clienteActual.saldo > 0) {
                         const elSaldo = document.getElementById("perfil-saldo");
@@ -581,41 +583,43 @@
             });
         }
 
-        window.verificarCliente = () => {
+        window.verificarCliente = async () => {
             const tel = document.getElementById("login-tel").value.trim();
             if (!tel) return alert("Ingresa tu número.");
             
-            const unsub = onSnapshot(doc(db, "clientes", tel), (docSnap) => {
-                if (docSnap.exists()) {
-                    unsub(); 
-                    iniciarSesion(tel);
-                } else { 
-                    unsub();
-                    document.getElementById("auth-step-1").style.display = "none"; 
-                    document.getElementById("auth-step-2").style.display = "block"; 
+            const unsub = onSnapshot(doc(db, "clientes", tel), async (docSnap) => {
+                unsub(); 
+                if (!docSnap.exists()) {
+                    await setDoc(doc(db, "clientes", tel), { 
+                        telefono: tel, 
+                        nombre: "", 
+                        tipoCliente: "Contado", 
+                        saldo: 0, 
+                        fechaRegistro: new Date()
+                    });
                 }
+                iniciarSesion(tel);
             });
         };
 
         window.registrarNuevoCliente = async () => {
-            const tel = document.getElementById("login-tel").value.trim();
-            const nombre = document.getElementById("reg-nombre").value;
+            const tel = localStorage.getItem("elegants_vip_tel");
+            const nombre = document.getElementById("reg-nombre").value.trim();
             const provId = document.getElementById("reg-provincia").value;
             const cantId = document.getElementById("reg-canton").value;
             const distId = document.getElementById("reg-distrito").value;
-            const direccion = document.getElementById("reg-direccion").value;
+            const direccion = document.getElementById("reg-direccion").value.trim();
 
             if (!nombre) return alert("Ingresa tu nombre.");
+            if (!provId || !cantId || !distId || !direccion) return alert("Por favor completa toda tu dirección de entrega.");
             
             await setDoc(doc(db, "clientes", tel), { 
-                nombre, 
-                telefono: tel, 
-                tipoCliente: "Contado", 
-                saldo: 0, 
-                fechaRegistro: new Date(),
-                provId, cantId, distId, direccion 
-            });
-            iniciarSesion(tel);
+                nombre, provId, cantId, distId, direccion 
+            }, { merge: true });
+            
+            document.getElementById("authModal").style.display = "none";
+            alert("¡Datos guardados! Ya puedes confirmar tu pedido.");
+            toggleCart();
         };
 
         window.actualizarDireccion = async () => {
@@ -927,6 +931,16 @@
 
         window.enviarPedido = async () => {
             if(!carrito.length) return alert("El carrito está vacío.");
+            
+            if (!clienteActual.nombre || !clienteActual.provId || !clienteActual.cantId || !clienteActual.distId || !clienteActual.direccion) {
+                alert("Para procesar tu primer pedido, necesitamos tus datos de entrega.");
+                toggleCart(); 
+                document.getElementById("authModal").style.display = "flex";
+                document.getElementById("auth-step-1").style.display = "none";
+                document.getElementById("auth-step-2").style.display = "block"; 
+                return; 
+            }
+
             const provSel = document.getElementById("perfil-provincia");
             const cantSel = document.getElementById("perfil-canton");
             const distSel = document.getElementById("perfil-distrito");
